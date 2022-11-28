@@ -21,3 +21,4 @@ opendp_wrap.o :
 
 clean :
 	rm -rf bench/$(TARGET) bench/opendp.py opendp_wrap.o *.o opendp_wrap.cxx
+	rm -rf bench/__pycache__
