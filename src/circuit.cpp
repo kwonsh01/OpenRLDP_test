@@ -74,7 +74,8 @@ opendp::circuit::circuit(const circuit& copied){
 
    benchmark = copied.benchmark;
 
-    grid = new pixel*[sizeof(copied.grid) / sizeof(copied.grid[0])] 
+    grid = new pixel*[sizeof(copied.grid) / sizeof(copied.grid[0])];
+    
     for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
         grid[i] = new pixel[sizeof(copied.grid[0]) / sizeof(pixel)];
     }
@@ -98,17 +99,20 @@ opendp::circuit::circuit(const circuit& copied){
 
     MAXVIASTACK = copied.MAXVIASTACK;
 
-    minLayer = new layer[sizeof(copied.minLayer)];
+    //minLayer = new layer[sizeof(copied.minLayer)];
 
-    for(int i = 0; i < sizeof(copied.minLayer); i++){
-        minLayer[i] = copied.minLayer[i];
-    }
+    //for(int i = 0; i < sizeof(copied.minLayer); i++){
+    //    minLayer[i] = copied.minLayer[i];
+    //}
 
-    maxLayer = new layer[sizeof(copied.maxLayer)];
+    //maxLayer = new layer[sizeof(copied.maxLayer)];
 
-    for(int i = 0; i < sizeof(copied.maxLayer); i++){
-        maxLayer[i] = copied.maxLayer[i];
-    }
+    //for(int i = 0; i < sizeof(copied.maxLayer); i++){
+    //    maxLayer[i] = copied.maxLayer[i];
+    //}
+
+    minLayer = copied.minLayer;
+    maxLayer = copied.maxLayer;
 
     DEFVersion = copied.DEFVersion;
     DEFDelimiter = copied.DEFDelimiter;
