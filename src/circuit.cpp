@@ -74,8 +74,6 @@ opendp::circuit::circuit(const circuit& copied){
 
    benchmark = copied.benchmark;
 
-    // 2D - pixel grid;
-    pixel** grid;
     grid = new pixel*[sizeof(copied.grid) / sizeof(copied.grid[0])] 
     for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
         grid[i] = new pixel[sizeof(copied.grid[0]) / sizeof(pixel)];
@@ -91,9 +89,7 @@ opendp::circuit::circuit(const circuit& copied){
 
     sub_regions = copied.sub_regions;
     tracks = copied.tracks;
-    //얘네 그 포인터 무서워서 일단 놔둔애들
     
-  // used for LEF file
     LEFVersion = copied.LEFVersion;
     LEFNamesCaseSensitive = copied.LEFNamesCaseSensitive;
     LEFDelimiter = copied.LEFDelimiter;
@@ -101,8 +97,18 @@ opendp::circuit::circuit(const circuit& copied){
     LEFManufacturingGrid = copied.LEFManufacturingGrid;
 
     MAXVIASTACK = copied.MAXVIASTACK;
-    layer* minLayer;
-    layer* maxLayer;
+
+    minLayer = new layer[sizeof(copied.minLayer)];
+
+    for(int i = 0; i < sizeof(copied.minLayer); i++){
+        minLayer[i] = copied.minLayer[i];
+    }
+
+    maxLayer = new layer[sizeof(copied.maxLayer)];
+
+    for(int i = 0; i < sizeof(copied.maxLayer); i++){
+        maxLayer[i] = copied.maxLayer[i];
+    }
 
     DEFVersion = copied.DEFVersion;
     DEFDelimiter = copied.DEFDelimiter;
