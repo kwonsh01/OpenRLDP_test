@@ -131,8 +131,8 @@ opendp::circuit::circuit(const circuit& copied){
     viaRules = copied.viaRules;
     groups = copied.groups;
 
-  std::vector< std::pair< double, cell* > > large_cell_stor;
-
+    large_cell_stor = copied.large_cell_stor;
+    
 #ifdef USE_GOOGLE_HASH
     macro2id = copied.macro2id;
     cell2id = copied.cell2id;
