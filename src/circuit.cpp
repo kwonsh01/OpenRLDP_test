@@ -43,9 +43,8 @@ opendp::circuit::circuit()
 #endif
 };
 
-opendp::circuit::circuit(const circuit copied){
+opendp::circuit::circuit(const circuit& copied){
     GROUP_IGNORE = copied.GROUP_IGNORE;
-
     design_util = copied.design_util;
     sum_displacement = copied.sum_displacement;
     num_fixed_nodes = copied.num_fixed_nodes;
@@ -77,12 +76,21 @@ opendp::circuit::circuit(const circuit copied){
 
     // 2D - pixel grid;
     pixel** grid;
-    //grid 
+    grid = new pixel*[sizeof(copied.grid) / sizeof(copied.grid[0])] 
+    for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
+        grid[i] = new pixel[sizeof(copied.grid[0]) / sizeof(pixel)];
+    }
+
+    for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
+        for(int j = 0; j < sizeof(copied.grid[0]) / sizeof(pixel); j++){
+            grid[i][j] = copied.grid[i][j];
+        }
+    }
 
     dummy_cell = copied.dummy_cell;
 
-    std::vector< sub_region > sub_regions;
-    std::vector< track > tracks;
+    sub_regions = copied.sub_regions;
+    tracks = copied.tracks;
     //얘네 그 포인터 무서워서 일단 놔둔애들
     
   // used for LEF file
