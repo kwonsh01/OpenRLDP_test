@@ -1,4 +1,6 @@
 #include "circuit.h"
+#include <vector>
+#include <utility>
       
 opendp::circuit::circuit() 
 : GROUP_IGNORE(false),
@@ -75,7 +77,7 @@ opendp::circuit::circuit(const circuit& copied){
    benchmark = copied.benchmark;
 
     grid = new pixel*[sizeof(copied.grid) / sizeof(copied.grid[0])];
-    
+
     for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
         grid[i] = new pixel[sizeof(copied.grid[0]) / sizeof(pixel)];
     }
@@ -135,7 +137,11 @@ opendp::circuit::circuit(const circuit& copied){
     viaRules = copied.viaRules;
     groups = copied.groups;
 
-    large_cell_stor = copied.large_cell_stor;
+    fileOut = copied.fileOut;   
+    
+    for(int i = 0; i < copied.large_cell_stor.size(); i++){
+        large_cell_stor.push_back(std::pair<double, opendp::cell*>(copied.large_cell_stor[i].first, &(cells[i])));
+    };
     
 #ifdef USE_GOOGLE_HASH
     macro2id = copied.macro2id;
