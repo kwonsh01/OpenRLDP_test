@@ -46,6 +46,20 @@ opendp::circuit::circuit()
 };
 
 opendp::circuit::circuit(const circuit& copied){
+    //#ifdef USE_GOOGLE_HASH
+    macro2id = copied.macro2id;
+    cell2id = copied.cell2id;
+    pin2id = copied.pin2id;
+    net2id = copied.net2id;
+    row2id = copied.row2id;
+    site2id = copied.site2id;
+    layer2id = copied.layer2id;
+    via2id = copied.via2id;
+    group2id = copied.group2id;
+    //#endif
+
+    edge_spacing = copied.edge_spacing;
+
     GROUP_IGNORE = copied.GROUP_IGNORE;
     design_util = copied.design_util;
     sum_displacement = copied.sum_displacement;
@@ -81,7 +95,7 @@ opendp::circuit::circuit(const circuit& copied){
     for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
         grid[i] = new pixel[sizeof(copied.grid[0]) / sizeof(pixel)];
     }
-
+    
     for(int i = 0; i < sizeof(copied.grid) / sizeof(copied.grid[0]); i++){
         for(int j = 0; j < sizeof(copied.grid[0]) / sizeof(pixel); j++){
             grid[i][j] = copied.grid[i][j];
@@ -139,19 +153,9 @@ opendp::circuit::circuit(const circuit& copied){
 
     fileOut = copied.fileOut;   
     
-    for(int i = 0; i < copied.large_cell_stor.size(); i++){
-        large_cell_stor.push_back(std::pair<double, opendp::cell*>(copied.large_cell_stor[i].first, &(cells[i])));
-    };
-    
-#ifdef USE_GOOGLE_HASH
-    macro2id = copied.macro2id;
-    cell2id = copied.cell2id;
-    pin2id = copied.pin2id;
-    net2id = copied.net2id;
-    row2id = copied.row2id;
-    site2id = copied.site2id;
-    layer2id = copied.layer2id;
-    via2id = copied.via2id;
-    group2id = copied.group2id;
-#endif
+    large_cell_stor = copied.large_cell_stor;
+
+    // for(int i = 0; i < copied.large_cell_stor.size(); i++){
+    //     large_cell_stor.push_back(std::pair<double, opendp::cell*>(copied.large_cell_stor[i].first, &(cells[i])));
+    // };
 };
