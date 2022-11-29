@@ -16,9 +16,10 @@ elif(file == '2'):
 	argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
 	
 measure = opendp.CMeasure()
-ckt = opendp.circuit()
+cktt = opendp.circuit()
 
-ckt.read_files(argv)
+cktt.read_files(argv)
+ckt = opendp.circuit(cktt)
 
 #Cell = ckt.get_Cell()
 #print(Cell)

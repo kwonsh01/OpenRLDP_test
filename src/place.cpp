@@ -54,17 +54,6 @@ using std::pair;
 using std::sort;
 using std::make_pair;
 
-std::vector<cell*> circuit::get_Cell(){
-  vector< cell* > cell_list;
-
-  for(int i = 0; i < cells.size(); i++) {
-    if(cells[i].isFixed || cells[i].inGroup || cells[i].isPlaced) continue;
-    cell_list.push_back(&(cells[i]));
-  }
-  //sort(cell_list.begin(), cell_list.end(), SortUpOrder);
-  return cell_list;
-}
-
 double disp(cell* theCell) {
   return abs(theCell->init_x_coord - theCell->x_coord) +
          abs(theCell->init_y_coord - theCell->y_coord);
