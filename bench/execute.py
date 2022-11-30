@@ -16,15 +16,18 @@ elif(file == '2'):
 	argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
 	
 measure = opendp.CMeasure()
-cktt = opendp.circuit()
+ckt = opendp.circuit()
+#ckt_original = opendp.circuit()
 
-cktt.read_files(argv)
-ckt = opendp.circuit(cktt)
+#ckt_original.read_files(argv)
+ckt.read_files(argv)
+
+#ckt = opendp.circuit(ckt_original)
 
 #Cell = ckt.get_Cell()
 #print(Cell)
 
-ckt.evaluation()
+#ckt.evaluation()
 
 ckt.simple_placement(measure)
 ckt.calc_density_factor(4)

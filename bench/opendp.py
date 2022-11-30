@@ -856,6 +856,15 @@ class circuit(object):
 
     def __init__(self, *args):
         _opendp.circuit_swiginit(self, _opendp.new_circuit(*args))
+
+    def pre_placement(self):
+        return _opendp.circuit_pre_placement(self)
+
+    def place_oneCell(self, cell_id):
+        return _opendp.circuit_place_oneCell(self, cell_id)
+
+    def get_target_cell(self, cell_id):
+        return _opendp.circuit_get_target_cell(self, cell_id)
     __swig_destroy__ = _opendp.delete_circuit
 
 # Register circuit in _opendp:
