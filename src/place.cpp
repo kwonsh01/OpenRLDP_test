@@ -94,7 +94,7 @@ bool SortDownOrder(cell* a, cell* b) {
 }
 
 // SIMPLE PLACEMENT ( NOTICE // FUNCTION ORDER SHOULD BE FIXED )
-void circuit::simple_placement(CMeasure& measure) {
+void circuit::simple_placement() {
   if(groups.size() > 0) {
     // group_cell -> region assign
     group_cell_region_assign();
@@ -105,8 +105,6 @@ void circuit::simple_placement(CMeasure& measure) {
   cout << " non_group_cell_region_assign done .." << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
 
-  measure.stop_clock("resgin assign");
-
   // pre placement out border ( Need region assign function previously )
   if(groups.size() > 0) {
     group_cell_pre_placement();
@@ -115,8 +113,6 @@ void circuit::simple_placement(CMeasure& measure) {
     cout << " non_group_cell_pre_placement done .." << endl;
     cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   }
-
-  measure.stop_clock("pre-placement");
 
   // naive method placement ( Multi -> single )
   if(groups.size() > 0) {
@@ -130,10 +126,8 @@ void circuit::simple_placement(CMeasure& measure) {
         if(count_a < 10 || count_b < 100) break;
       }
     }
-    measure.stop_clock("Group cell placement");
   }
   non_group_cell_placement("init_coord");
-  measure.stop_clock("non Group cell placement");
   cout << " non_group_cell_placement done .. " << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;

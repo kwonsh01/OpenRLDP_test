@@ -8,3 +8,5 @@ NEW Function(RLDP.cpp)
 >>void pre_placement();  
 >>void place_oneCell(int cell_id);  
 >>cell* get_target_cell(int cell_id);  
+>>  
+>>Remove CMeasure

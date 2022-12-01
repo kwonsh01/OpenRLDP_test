@@ -611,7 +611,7 @@ class circuit {
   std::pair< bool, cell* > nearest_cell(int x_coord, int y_coord);
 
   // place.cpp - By SGD
-  void simple_placement(CMeasure& measure);
+  void simple_placement();
   void non_group_cell_pre_placement();
   void group_cell_pre_placement();
   void non_group_cell_placement(std::string mode);
