@@ -624,7 +624,7 @@ class circuit {
   int group_annealing(group* theGroup);
   int non_group_annealing();
   int non_group_refine();
-  
+
   // assign.cpp - By SGD
   void fixed_cell_assign();
   void print_pixels();
@@ -647,24 +647,11 @@ class circuit {
   void placed_check(std::ofstream& log);
   void overlap_check(std::ofstream& os);
   
-  //added function
   std::vector<cell*> get_Cell();
   circuit(const circuit& copied);
-  void pre_placement(); // placement process up to RL placement
-  void place_oneCell(int cell_id); // place one cell
-  cell* get_target_cell(int cell_id); // return cell corresponding to input cell ID
-};
-
-
-//added
-class Initcircuit
-{
-    private:
-        static Initcircuit* instance;
-    public:
-        static Initcircuit* inst();
-
-        circuit initckt;
+  void pre_placement();
+  void place_oneCell(int cell_id);
+  cell* get_target_cell(int cell_id);
 };
 
 // parser_helper.cpp

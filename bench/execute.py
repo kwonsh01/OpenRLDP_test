@@ -7,8 +7,8 @@ print("=========================================================================
 
 print("1: gcd_nangate45")
 print("2: des_perf_a_md1")
-file = input()
-
+#file = input()
+file = '1'
 if(file == '1'):
 	argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
 	
@@ -17,17 +17,13 @@ elif(file == '2'):
 	
 measure = opendp.CMeasure()
 ckt = opendp.circuit()
-#ckt_original = opendp.circuit()
 
-#ckt_original.read_files(argv)
 ckt.read_files(argv)
-
-#ckt = opendp.circuit(ckt_original)
 
 #Cell = ckt.get_Cell()
 #print(Cell)
 
-#ckt.evaluation()
+ckt.evaluation()
 
 ckt.simple_placement(measure)
 ckt.calc_density_factor(4)

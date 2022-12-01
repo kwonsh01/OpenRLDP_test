@@ -7,7 +7,6 @@ using opendp::cell;
 using opendp::row;
 using opendp::pixel;
 using opendp::rect;
-using opendp::Initcircuit;
 
 
 using std::cout;
@@ -32,45 +31,45 @@ std::vector<cell*> circuit::get_Cell(){
 }
 
 opendp::circuit::circuit(const circuit& copied){
-  *this = copied;
+  //*this = copied;
 
-  // grid = NULL;
+  grid = NULL;
 
-  // int row_num = this->ty / this->rowHeight;
-  // int col = this->rx / this->wsite;
+  int row_num = this->ty / this->rowHeight;
+  int col = this->rx / this->wsite;
 
-  // grid = new pixel*[row_num];
-  // for(int i = 0; i < row_num; i++) {
-  //   grid[i] = new pixel[col];
-  // }
+  grid = new pixel*[row_num];
+  for(int i = 0; i < row_num; i++) {
+    grid[i] = new pixel[col];
+  }
   
-  // for(int i = 0; i < row_num; i++) {
-  //   for(int j = 0; j < col; j++) {
-  //     this->grid[i][j].name = "pixel_" + to_string(i) + "_" + to_string(j);
-  //     this->grid[i][j].y_pos = i;
-  //     this->grid[i][j].x_pos = j;
-  //     this->grid[i][j].linked_cell = NULL;
-  //     this->grid[i][j].isValid = false;
-  //   }
-  // }
-  // for(auto& curFragRow : prevrows) {
-  //   int x_start = IntConvert((1.0*curFragRow.origX - core.xLL) / wsite);
-  //   int y_start = IntConvert((1.0*curFragRow.origY - core.yLL) / rowHeight);
+  for(int i = 0; i < row_num; i++) {
+    for(int j = 0; j < col; j++) {
+      this->grid[i][j].name = "pixel_" + to_string(i) + "_" + to_string(j);
+      this->grid[i][j].y_pos = i;
+      this->grid[i][j].x_pos = j;
+      this->grid[i][j].linked_cell = NULL;
+      this->grid[i][j].isValid = false;
+    }
+  }
+  for(auto& curFragRow : prevrows) {
+    int x_start = IntConvert((1.0*curFragRow.origX - core.xLL) / wsite);
+    int y_start = IntConvert((1.0*curFragRow.origY - core.yLL) / rowHeight);
     
-  //   int x_end = x_start + curFragRow.numSites;
-  //   int y_end = y_start + 1;
+    int x_end = x_start + curFragRow.numSites;
+    int y_end = y_start + 1;
 
-  //   for(int i=x_start; i<x_end; i++) {
-  //     for(int j=y_start; j<y_end; j++) {
-  //       grid[j][i].isValid = true;
-  //     }
-  //   }
-  // }
+    for(int i=x_start; i<x_end; i++) {
+      for(int j=y_start; j<y_end; j++) {
+        grid[j][i].isValid = true;
+      }
+    }
+  }
   
-  // fixed_cell_assign();
-  // group_pixel_assign_2();
-  // group_pixel_assign();
-  // init_large_cell_stor();
+  fixed_cell_assign();
+  group_pixel_assign_2();
+  group_pixel_assign();
+  init_large_cell_stor();
 }
 
 void circuit::pre_placement() {
@@ -111,6 +110,13 @@ void circuit::pre_placement() {
 void circuit::place_oneCell(int cell_id){
   //rl placement
   vector<cell*> cell_list;
+    for(int i=0; i<cells.size(); i++) {
+        cell* theCell = &cells[i];
+        if(theCell->isPlaced || theCell->inGroup) continue;
+        cell_list.push_back(theCell);
+    }
+    cout << "# of non-group movable cells: " << cell_list.size() << endl;
+    
   cell* thecell;
 
   // for(int i=0; i<cells.size(); i++) {

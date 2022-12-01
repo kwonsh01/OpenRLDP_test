@@ -44,7 +44,6 @@ using opendp::cell;
 using opendp::row;
 using opendp::pixel;
 using opendp::rect;
-using opendp::Initcircuit;
 
 using std::cout;
 using std::endl;
@@ -212,20 +211,15 @@ void circuit::non_group_cell_placement(string mode) {
     cell* theCell = cell_list[i];
     macro* theMacro = &macros[theCell->type];
     if(theMacro->isMulti == true)
-      if(map_move(theCell, mode) == false){
-        cout << "M1" << endl;
-        shift_move(theCell, mode);
-      } 
+      if(map_move(theCell, mode) == false) shift_move(theCell, mode);
   }
   for(int i = 0; i < cell_list.size(); i++) {
     cell* theCell = cell_list[i];
     macro* theMacro = &macros[theCell->type];
     if(theMacro->isMulti == false)
-      if(map_move(theCell, mode) == false){
-        cout << "M2" << endl;
-        shift_move(theCell, mode);
-      } 
+      if(map_move(theCell, mode) == false) shift_move(theCell, mode);
   }
+
   return;
 }
 
@@ -491,22 +485,4 @@ int circuit::non_group_refine() {
   }
   // cout << " nonGroup refine : " << count << endl;
   return count;
-}
-
-//added
-/* Global Variable */
-circuit* circuit::instance = nullptr;
-Initcircuit* Initcircuit::instance = nullptr;
-/* Singleton Caller*/
-circuit* circuit::inst()
-{
-    if(instance == nullptr)
-        instance = new circuit();
-    return instance;
-}
-Initcircuit* Initcircuit::inst()
-{
-    if(instance == nullptr)
-        instance = new Initcircuit();
-    return instance;
 }

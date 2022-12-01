@@ -1,6 +1,4 @@
 #include "circuit.h"
-#include <vector>
-#include <utility>
       
 opendp::circuit::circuit() 
 : GROUP_IGNORE(false),
