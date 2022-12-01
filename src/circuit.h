@@ -648,10 +648,11 @@ class circuit {
   void overlap_check(std::ofstream& os);
   
   std::vector<cell*> get_Cell();
-  circuit(const circuit& copied);
+  //circuit(const circuit& copied);
   void pre_placement();
   void place_oneCell(int cell_id);
   cell* get_target_cell(int cell_id);
+  void copy_data(const circuit& copied);
 };
 
 // parser_helper.cpp

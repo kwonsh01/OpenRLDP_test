@@ -30,19 +30,18 @@ std::vector<cell*> circuit::get_Cell(){
   return cell_list;
 }
 
-opendp::circuit::circuit(const circuit& copied){
-  //*this = copied;
-
-  grid = NULL;
+void::circuit::copy_data(const circuit& copied){
+  *this = copied;
 
   int row_num = this->ty / this->rowHeight;
   int col = this->rx / this->wsite;
-
+/*
+  grid = NULL;
   grid = new pixel*[row_num];
   for(int i = 0; i < row_num; i++) {
     grid[i] = new pixel[col];
   }
-  
+*/
   for(int i = 0; i < row_num; i++) {
     for(int j = 0; j < col; j++) {
       this->grid[i][j].name = "pixel_" + to_string(i) + "_" + to_string(j);

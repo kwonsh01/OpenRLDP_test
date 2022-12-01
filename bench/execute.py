@@ -16,21 +16,30 @@ elif(file == '2'):
 	argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
 	
 measure = opendp.CMeasure()
-ckt = opendp.circuit()
-
-ckt.read_files(argv)
 
 #Cell = ckt.get_Cell()
 #print(Cell)
 
-ckt.evaluation()
+ckt = opendp.circuit()
+ckt_original = opendp.circuit()
+ckt_original.read_files(argv)
+
+ckt.copy_data(ckt_original)
 
 ckt.simple_placement(measure)
 ckt.calc_density_factor(4)
-
-ckt.write_def(ckt.out_def_name)
-
+#ckt.write_def(ckt.out_def_name)
 ckt.evaluation()
-
 ckt.check_legality()
+
+print(" - - - - - < 2222222222 > - - - - - ")
+
+ckt.copy_data(ckt_original)
+
+ckt.simple_placement(measure)
+ckt.calc_density_factor(4)
+#ckt.write_def(ckt.out_def_name)
+ckt.evaluation()
+ckt.check_legality()
+
 print(" - - - - - < Program END > - - - - - ")
