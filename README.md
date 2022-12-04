@@ -1,4 +1,5 @@
-make -> create _opendp.so in /bench
+# OpenRLDP
+*OpenDP with PPO*
 
 NEW Function(RLDP.cpp)  
 >circuit.h 
@@ -10,3 +11,12 @@ NEW Function(RLDP.cpp)
 >>cell* get_target_cell(int cell_id);  
 >>  
 >>Remove CMeasure
+
+### How To Compile
+    $ git clone --single-branch dev https://github.com/kwonsh01/OpenRLDP_test.git
+    $ make
+
+### How To Execute
+    $ cd bench
+    // needs to modifiy opendp.py
+    $ python3 execute.py
