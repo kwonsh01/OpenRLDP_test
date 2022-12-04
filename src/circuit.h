@@ -175,8 +175,8 @@ struct viaRule {
 struct via {
   std::string name;
   std::string viaRule;
-  std::string property;
   std::vector< std::pair< layer*, rect > > obses;
+  std::string property;
   via() : name(""), viaRule(""), property("") {}
 };
 
