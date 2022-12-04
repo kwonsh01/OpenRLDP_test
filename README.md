@@ -15,7 +15,7 @@
     $ python3 execute.py
 
 ### NEW Function(RLDP.cpp)  
-*circuit.h 
+* circuit.h 
 >>std::vector<cell*> get_Cell();  
 >>//circuit(const circuit& copied);  
 >>void copy_data(const circuit& copied);  
