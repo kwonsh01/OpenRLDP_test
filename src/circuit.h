@@ -52,7 +52,6 @@
 #include <assert.h>
 #include <queue>
 #include <omp.h>
-#include "mymeasure.h"
 
 // hashmap settings
 #ifdef USE_GOOGLE_HASH
