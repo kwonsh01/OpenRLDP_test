@@ -15,12 +15,12 @@
     $ python3 execute.py
 
 ### NEW Function(RLDP.cpp)  
-* circuit.h 
+* circuit.h
 >std::vector<cell*> get_Cell();  
 >//circuit(const circuit& copied);  
 >void copy_data(const circuit& copied);  
 >void pre_placement();  
 >void place_oneCell(int cell_id);  
 >cell* get_target_cell(int cell_id);  
-  
->>Removed CMeasure
+>
+>Removed CMeasure
