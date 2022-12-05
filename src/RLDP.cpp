@@ -139,7 +139,10 @@ void circuit::place_oneCell(int cell_id){
     }
     // thecell->moveTry = true;
   }
-  cout << " non_group_cell_placement done .. " << endl;
+  //feature update
+  thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
+  
+  cout << thecell->id << " cell_placement done .. " << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
@@ -163,5 +166,143 @@ cell* circuit::get_target_cell(int cell_id) {
       return theCell;
     }
   }
+  //need to improve to log n 
 }
 
+double circuit::reward_calc() {
+  //Disp calc start
+  double avg_displacement = 0;
+  double sum_displacement = 0;
+  double max_displacement = 0;
+  int count_displacement = 0;
+  double violated_const = 0;
+  
+  int H1_count = 0;
+  int H2_count = 0;
+  int H3_count = 0;
+  int H4_count = 0;
+
+  int exist_H1 = 0;
+  int exist_H2 = 0;
+  int exist_H3 = 0;
+  int exist_H4 = 0;
+
+  double disp_H1 = 0;
+  double disp_H2 = 0;
+  double disp_H3 = 0;
+  double disp_H4 = 0;    
+
+  int tot_ov_num = 0;
+  for(int i = 0; i < cells.size(); i++){
+    cell* theCell = &cells[i];
+    int ov_num = 0;
+    if (!theCell->isPlaced){
+        double lx = theCell->x_coord;
+        double hx = theCell->x_coord + theCell->width;
+        double ly = theCell->y_coord;
+        double hy = theCell->y_coord + theCell->height;
+
+      //ov_num += overlap_num_calc(theCell)
+      for (int j = 0; j <cells.size(); j++){
+        cell* Cell = &cells[j];
+        double lx1 = Cell->x_coord;
+        double hx1 = Cell->x_coord+Cell->width;
+        double ly1 = Cell->y_coord;
+        double hy1 = Cell->y_coord + Cell->height;
+        
+        if((lx < hx1 && hx1 < hx) || (lx < lx1 && lx1 < hx)){
+            if( (ly < hy1 && hy1 < hy) || (ly < ly1 && ly1 < hy)){
+              ov_num++;
+          tot_ov_num++;
+            }
+        }
+      }
+    }
+
+    theCell->overlapNum = ov_num;
+    //cout << "In reward calc : " << theCell->disp << endl;
+
+    double displacement = abs(theCell->init_x_coord - theCell->x_coord) + abs(theCell->init_y_coord - theCell->y_coord);
+    sum_displacement += displacement;
+    if(displacement > max_displacement){
+        max_displacement = displacement;
+    }
+    count_displacement++;
+
+    if((displacement/rowHeight) > max_disp_const) 
+      violated_const += static_cast<double>(displacement/rowHeight);
+    double rowheight = 2800;
+    if(theCell->height == rowheight){
+        H1_count++;
+        disp_H1 += displacement;
+        exist_H1 = 1;
+    }
+    if(theCell->height == 2*rowheight){
+        H2_count++;
+        disp_H2 += displacement;
+        exist_H2 = 1;
+    }
+    if(theCell->height == 3*rowheight){
+        H3_count++;
+        disp_H3 += displacement;
+        exist_H3 = 1;
+    }
+    if(theCell->height == 4*rowheight){
+        H4_count++;
+        disp_H4 += displacement;
+        exist_H4 = 1;
+    }
+  }
+  
+  avg_displacement = sum_displacement / count_displacement;
+
+  //Smm calc start
+  double Smm;
+  if((violated_const/max_disp_const)>1)
+      Smm = 1 + static_cast<double>((violated_const/max_disp_const)*(max_displacement/(100*rowHeight)));
+  else
+      Smm = 1 + static_cast<double>(max_displacement/(100*rowHeight));
+
+  //Sam calc start
+  double Sam;
+  double avg_disp_H1 = 0;
+  double avg_disp_H2 = 0;
+  double avg_disp_H3 = 0;
+  double avg_disp_H4 = 0;
+  if(exist_H1) avg_disp_H1 = static_cast<double>(disp_H1/H1_count);
+  if(exist_H2) avg_disp_H2 = static_cast<double>(disp_H2/H2_count);
+  if(exist_H3) avg_disp_H3 = static_cast<double>(disp_H3/H3_count);
+  if(exist_H4) avg_disp_H4 = static_cast<double>(disp_H4/H4_count);
+
+  Sam = static_cast<double>((avg_disp_H1 + avg_disp_H2 + avg_disp_H3 + avg_disp_H4)/(exist_H1 + exist_H2 + exist_H3 + exist_H4));
+  //cout << "Here" << endl;    
+
+  double shpwl = std::max((HPWL("CUR") - HPWL("INIT")) / HPWL("INIT"), 0.0) * (1.2);  
+  // double shpwl = std::max((HPWL("CUR") - HPWL("INIT") / HPWL("INIT")), 0.0) * (1 + std::max(calc_density_factor(8.0), 0.2));
+
+  cout << " AVG_displacement : " << avg_displacement << endl;
+  cout << " SUM_displacement : " << sum_displacement << endl;
+  cout << " MAX_displacement : " << max_displacement << endl;
+  cout << " Smm              : " << Smm << endl;
+  cout << " Sam              : " << Sam/rowHeight << endl;
+  cout << " Shpwl            : " << shpwl << endl;
+  // cout << " HPWL             : " << HPWL("CUR") << "    " << HPWL("INIT") << endl;
+  double S_total = Sam*(1+shpwl)/rowHeight; //+ tot_ov_num;
+  //cout << "total overlap is " << tot_ov_num << endl;
+  cout << "Stotal is " << S_total << endl;
+  return S_total;
+}
+
+int circuit::overlap_num_calc(cell* theCell) 
+{
+    vector<cell*> ovcells = overlap_cells(theCell);
+    ovcells.erase(unique(ovcells.begin(), ovcells.end()), ovcells.end());
+    int num = (int)ovcells.size();
+    /////////// num = 0 for all cells...
+
+    if(num != 0)
+        cout << "CELL " << theCell->name << " has " << num << "overlap cells" << endl;
+
+    return num;
+    
+}

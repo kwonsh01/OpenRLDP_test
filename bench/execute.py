@@ -1,3 +1,4 @@
+import numpy as np
 import opendp
 
 print("===========================================================================")     
@@ -25,12 +26,23 @@ ckt.copy_data(ckt_original)
 
 Cell = ckt.get_Cell()
 
+# state = []
+
+# for j in range(Cell.size()):
+# 	disp_temp = Cell[j].disp
+# 	state.append(disp_temp)
+
+# state = np.array(state)
+# print(state)
+
 if(run == "OnePlace"):
 	ckt.pre_placement()
  
 	for i in range(Cell.size()):
      
 		ckt.place_oneCell(Cell[i].id)
+		# state[i].disp = abs(Cell[i].init_x_coord - Cell[i].x_coord) + abs(Cell[i].init_y_coord - Cell[i].y_coord)
+		# state[i] = Cell[i].disp
   
 		if(i % 10 == 0):
 			ckt.write_def("def/gcd_nangate45_output_"+str(i))

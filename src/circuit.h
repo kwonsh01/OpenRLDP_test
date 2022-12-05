@@ -302,12 +302,26 @@ struct cell {
         dense_factor(0.0),
         dense_factor_count(0),
         binId(UINT_MAX),
-        disp(0.0) {
+        disp(0.0),
+        moveTry(false),
+        overlapNum(0),
+        localOverlap(0),
+        localUtil(0.0),
+        hpwl(0.0),
+        prior(0.0) {
 #ifdef USE_GOOGLE_HASH
     ports.set_empty_key(INITSTR);
 #endif
   }
   void print();
+
+  //added member: RL
+  int overlapNum;
+  int moveTry;
+  int localOverlap;
+  double localUtil;
+  double hpwl;
+  double prior;
 };
 
 struct pixel {
@@ -414,6 +428,7 @@ struct track {
 
 class circuit {
  public:
+
   bool GROUP_IGNORE;
 
   void init_large_cell_stor();
@@ -646,12 +661,18 @@ class circuit {
   void placed_check(std::ofstream& log);
   void overlap_check(std::ofstream& os);
   
+//////////////////////////////////////////////////////////////////////
+
+  double reward;
+  bool isDone;
+
   std::vector<cell*> get_Cell();
-  //circuit(const circuit& copied);
   void pre_placement();
   void place_oneCell(int cell_id);
   cell* get_target_cell(int cell_id);
   void copy_data(const circuit& copied);
+  double reward_calc();
+  int overlap_num_calc(cell* theCell); 
 };
 
 // parser_helper.cpp
