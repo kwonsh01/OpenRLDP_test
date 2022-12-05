@@ -20,18 +20,16 @@ using std::make_pair;
 using std::to_string;
 
 std::vector<cell*> circuit::get_Cell(){
-  vector<cell*> cell_list;
-
   for(int i = 0; i < cells.size(); i++) {
     if(cells[i].isFixed || cells[i].inGroup || cells[i].isPlaced) continue;
-    cell_list.push_back(&(cells[i]));
+    cell_list_notFixed.push_back(&(cells[i]));
   }
   //sort(cell_list.begin(), cell_list.end(), SortUpOrder);
-  return cell_list;
+  return cell_list_notFixed;
 }
 
 void::circuit::copy_data(const circuit& copied){
-  *this = copied;
+  *this = copied;//need to fix, except to copy cell_list_notFixed
 
   int row_num = this->ty / this->rowHeight;
   int col = this->rx / this->wsite;
@@ -69,6 +67,7 @@ void::circuit::copy_data(const circuit& copied){
   group_pixel_assign_2();
   group_pixel_assign();
   init_large_cell_stor();
+
 }
 
 void circuit::pre_placement() {
@@ -142,12 +141,12 @@ void circuit::place_oneCell(int cell_id){
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
-  cout << thecell->id << "'s cell_placement done .. " << endl;
+  cout << cell_id << "'s cell_placement done .. " << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
 
-cell* circuit::get_target_cell(int cell_id) {
+cell* circuit::get_target_cell(int cell_index) {
   //cell* circuit::get_target_cell(Action &action) {
   //cell* get_target_cell(vector<cell*> cell_list, Action &action) {
   // Get argmax_i (cell_list)
@@ -169,15 +168,16 @@ cell* circuit::get_target_cell(int cell_id) {
   // }
   //need to improve to log n 
 
-  cell* theCell = &(cells[cell_id]);
-  cout << "target cell's ID is : " << cell_id << endl;
+  cell* theCell = (cell_list_notFixed[cell_index]);
+  cout << "target cell's Index is : " << cell_index << endl;
+  cout << "target cell's ID is : " << theCell->id << endl;
   cout << "target cell: " << theCell->name << endl;
   return theCell;
 }
 
 bool circuit::isDone_calc() {
-  for(int i = 0; i < cells.size(); i++){
-    if(cells[i].moveTry)
+  for(int i = 0; i < cell_list_notFixed.size(); i++){
+    if(!(cell_list_notFixed[i]->moveTry))
       return false;
   }
   return true;

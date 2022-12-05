@@ -161,17 +161,20 @@ def main():
     ckt = opendp.circuit()
     ckt_original = opendp.circuit()
     ckt_original.read_files(argv)
+    Cell = ckt_original.get_Cell()
     
     ckt.copy_data(ckt_original)
-    
+
     #get cells_list
     Cell = ckt.get_Cell()
     
     model = PPO()
     score = 0.0
-    print_interval = 20
+    print_interval = 1
     
-    for n_episode in range(2):
+    reward_arr = []
+    
+    for n_episode in range(10):
         print("[TRAIN] Start New Episode!")
         print("[TRAIN] EPISODE #",n_episode)
         stepN = 0
@@ -184,15 +187,19 @@ def main():
         
         state = read_state(Cell)
         s = state    
-
+        print(s)
         done = False
 
         while not done:
             #step 
-            print("move tried")
-            for i in range(Cell.size()):
-                print(Cell[i].moveTry)
             for t in range(T_horizon):
+                triedNum = 0
+                print("move tried")
+                for i in range(Cell.size()):
+                    #print(Cell[i].isFixed)
+                    if(Cell[i].moveTry == 1):
+                        triedNum += 1
+                print(triedNum)
                 print("step number:")
                 print(stepN)
                 #action load
@@ -233,11 +240,17 @@ def main():
                 print(a)
                 
                 #placement and reward/done loadj
+                #a = a + 114
                 ckt.place_oneCell(a)
+                #a = a - 114
                 r = -1.0 * ckt.reward_calc()
                 print("reward: ")
                 print(r)
-                done = ckt.isDone_calc()
+                #done = ckt.isDone_calc()
+                
+                stepN += 1
+                if (stepN == Cell.size()):
+                    done = True
                 print("done: ")
                 print(done)
 
@@ -247,17 +260,21 @@ def main():
                 s_prime = read_state(Cell)
                 #print("next state: ")
                 #print(s_prime)
+                print("sizeof probf")
+                #print(probf)
+                print("////")
+                #print(prob)
                 model.put_data((s, a, r/100.0, s_prime, probf[a].item(), done))
                 s = s_prime
                 #done = True
                 #quit()
                 score += r
-                stepN += 1
                 if done:
                     break
 
             model.train_net()
         #episode end
+        reward_arr.append(-1.0 * (1/r))
         if n_episode%print_interval==0 and n_episode!=0:
             print("# of episode :{}, avg score : {:.1f}".format(n_episode, score/print_interval))
             score = 0.0
@@ -267,6 +284,7 @@ def main():
     ckt.write_def(ckt.out_def_name)
     ckt.evaluation
     ckt.check_legality
+    print(reward_arr)
     print("- - - - - < Program END > - - - - - ")
             
 

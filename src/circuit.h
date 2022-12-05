@@ -317,7 +317,7 @@ struct cell {
 
   //added member: RL
   int overlapNum;
-  int moveTry;
+  bool moveTry;
   int localOverlap;
   double localUtil;
   double hpwl;
@@ -665,6 +665,7 @@ class circuit {
 
   double reward;
   bool isDone;
+  std::vector<cell*> cell_list_notFixed;
 
   std::vector<cell*> get_Cell();
   void pre_placement();

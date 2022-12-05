@@ -861,6 +861,7 @@ class circuit(object):
         return _opendp.circuit_overlap_check(self, os)
     reward = property(_opendp.circuit_reward_get, _opendp.circuit_reward_set)
     isDone = property(_opendp.circuit_isDone_get, _opendp.circuit_isDone_set)
+    cell_list_notFixed = property(_opendp.circuit_cell_list_notFixed_get, _opendp.circuit_cell_list_notFixed_set)
 
     def get_Cell(self):
         return _opendp.circuit_get_Cell(self)

@@ -49,9 +49,6 @@ if(run == "OnePlace"):
 	ckt.evaluation()
 	ckt.check_legality() 
 else:
-	ckt.simple_placement()
-	ckt.calc_density_factor(4)
-	ckt.write_def("def/nangate45_"+str(Cell.size())+".def")
-	ckt.evaluation()
-	ckt.check_legality()
+	for i in range(Cell.size()):
+		print(i, Cell[i].id)
 print(" - - - - - < Program END > - - - - - ")
