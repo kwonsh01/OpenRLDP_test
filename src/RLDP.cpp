@@ -137,7 +137,7 @@ void circuit::place_oneCell(int cell_id){
 		    cout << thecell->isPlaced << endl;
       }
     }
-    // thecell->moveTry = true;
+    thecell->moveTry = true;
   }
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
@@ -168,6 +168,14 @@ cell* circuit::get_target_cell(int cell_id) {
   }
   //need to improve to log n 
 }
+
+bool circuit::isDone_calc() {
+  for(int i = 0; i < cells.size(); i++){
+    if(cells[i].moveTry)
+      return false;
+  }
+  return true;
+} 
 
 double circuit::reward_calc() {
   //Disp calc start

@@ -1,7 +1,3 @@
-from pickle import FALSE, TRUE
-from turtle import begin_fill
-from typing import _SpecialForm
-import gym
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -25,9 +21,9 @@ class PPO(nn.Module):
         super(PPO, self).__init__()
         self.data = []
         
-        self.fc1   = nn.Linear(4,256)
+        self.fc1   = nn.Linear(347,256)
         self.fc_pi = nn.Linear(256,2)
-        self.fc_v  = nn.Linear(256,1)
+        self.fc_v  = nn.Linear(65536,1)
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
 
     def pi(self, x, softmax_dim=0):
@@ -37,7 +33,7 @@ class PPO(nn.Module):
         print("x is : ", x)
         x = F.relu(self.fc1(x))
 	#print("x is : ", x)
-        x = F.relu(self.fc2(x))
+    #    x = F.relu(self.fc2(x))
         # x.shape = ( N x 256 )
         x = self.fc_pi(x)
         # x.shape = ( N x 1 )
@@ -49,7 +45,7 @@ class PPO(nn.Module):
     def v(self, x):
         # x.shape = ( N x 9)    B X (N x 5)
         x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+    #    x = F.relu(self.fc2(x))
         # x.shape = ( N x 256 )
         if len(x.shape) > 2:
             x1 = torch.transpose(x, 1, 2)
@@ -117,6 +113,16 @@ class PPO(nn.Module):
             loss.mean().backward()
             self.optimizer.step()
         
+def read_state(Cell):
+    state = []
+        
+    for j in range(Cell.size()):
+        disp_temp = Cell[j].disp
+        state.append(disp_temp)
+    
+    state = np.array(state)
+    return state
+
 def main():
     print("===========================================================================")     
     print("   Open Source Mixed-Height Standard Cell Detail Placer < OpenDP_v1.0 >    ")
@@ -135,18 +141,13 @@ def main():
 
     #post placement
     ckt = opendp.circuit()
-    #ckt_original = opendp.circuit()
-    ckt.read_files(argv)
-    #ckt.copy_data(ckt_original)
-    ckt.pre_placement()
-
-
+    ckt_original = opendp.circuit()
+    ckt_original.read_files(argv)
+    
+    ckt.copy_data(ckt_original)
+    
+    #get cells_list
     Cell = ckt.get_Cell()
-    state = np.array([])
-    for j in range(Cell.size()):
-        disp_temp = Cell[j].disp
-        state.append(disp_temp)
-    init_state = copy.deepcopy(state)
     
     model = PPO()
     score = 0.0
@@ -155,44 +156,76 @@ def main():
     for n_episode in range(100):
         print("[TRAIN] Start New Episode!")
         print("[TRAIN] EPISODE #",n_episode)
+        
+        #load initial circuit and state
+        #s = copy.deepcopy(state)
+        ckt.copy_data(ckt_original)
+        ckt.pre_placement()
+        
+        #load Cellist and state
+        
+        state = []
+        for j in range(Cell.size()):
+            disp_temp = Cell[j].disp
+            height_temp = Cell[j].height
+            id_temp = Cell[j].id
+            isTried_temp = Cell[j].moveTry
+            overlap_temp = Cell[j].overlapNum
+            width_temp = Cell[j].width
 
-        state = copy.deepcopy(init_state)
-        state = copy.deepcopy(init_state)
+            #print(Cell[j].id)
+            state.append([disp_temp, height_temp, id_temp, isTried_temp, overlap_temp, width_temp])
+        s = np.array(state)
+        
         done = False
 
         while not done:
+            #step 
             for t in range(T_horizon):
+                #action load
                 prob = model.pi(torch.from_numpy(s).float())
                 m = Categorical(prob)
                 a = m.sample().item()
+                print("action: ")
+                print(a)
                 
+                #placement and reward/done load
                 ckt.place_oneCell(a)
-                r = ckt.getReward()
-                done = ckt.getDone()
+                r = ckt.reward_calc()
+                print("reward: ")
+                print(r)
+                done = ckt.isDone_calc()
+                print("done: ")
+                print(done)
 
-                s_prime[i].disp = Cell[i].disp
+                print("state: ")
+                print(s)
+                #cellist reload and state update
+                s_prime = read_state(Cell)
+                print("next state: ")
+                print(s_prime)
                 model.put_data((s, a, r/100.0, s_prime, prob[a].item(), done))
                 s = s_prime
-
+                done = True
+                quit()
                 score += r
                 if done:
                     break
 
             model.train_net()
-
+        #episode end
         if n_episode%print_interval==0 and n_episode!=0:
             print("# of episode :{}, avg score : {:.1f}".format(n_episode, score/print_interval))
             score = 0.0
 
     print("[TRAIN] End Training!")
-
     ckt.calc_density_factor(4)
     ckt.write_def(ckt.out_def_name)
     ckt.evaluation
     ckt.check_legality
     print("- - - - - < Program END > - - - - - ")
             
-
+#https://wikidocs.net/123324 => log
 
 if __name__ == '__main__':
     main()
