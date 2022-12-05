@@ -23,3 +23,6 @@
 >cell* get_target_cell(int cell_id);  
 >
 >Removed CMeasure
+
+### License
+* OpenDP(Open Source Detailed Placement Engine) [[Link]](https://github.com/sanggido/OpenDP/tree/master)
