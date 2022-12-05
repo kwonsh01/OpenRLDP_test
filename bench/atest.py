@@ -112,8 +112,8 @@ class PPO(nn.Module):
             A = A[0]
             a = a.reshape(A,1,1)
             
-            print("aaaaaa")
-            print(a)
+            #print("aaaaaa")
+            #print(a)
             pi_a = pi.gather(1,a).view(A,1) #해결한듯?
             ratio = torch.exp(torch.log(pi_a) - torch.log(prob_a))  # a/b == exp(log(a)-log(b))
 
@@ -171,10 +171,10 @@ def main():
     score = 0.0
     print_interval = 20
     
-    for n_episode in range(100):
+    for n_episode in range(2):
         print("[TRAIN] Start New Episode!")
         print("[TRAIN] EPISODE #",n_episode)
-        
+        stepN = 0
         #load initial circuit and state
         #s = copy.deepcopy(state)
         ckt.copy_data(ckt_original)
@@ -183,17 +183,22 @@ def main():
         #load Cellist and state
         
         state = read_state(Cell)
-        s = state
+        s = state    
 
         done = False
 
         while not done:
             #step 
+            print("move tried")
+            for i in range(Cell.size()):
+                print(Cell[i].moveTry)
             for t in range(T_horizon):
+                print("step number:")
+                print(stepN)
                 #action load
                 indices = []
-                s_List = state
-                k = 0
+                s_List = s.tolist()
+                k=0
                 #print(s)
                 print("Cell size: ")
                 print(len(s))
@@ -201,22 +206,29 @@ def main():
                     #3: moveTry index
                     if s[index][3] == True:
                         indices.append(index)
-                        #del s_List[index-k]
-                        s_List = np.delete(s_List, index - k)
+                        del s_List[index-k]
                         k += 1
                 s_List = torch.tensor(s_List, dtype=torch.float)
                 prob = model.pi(s_List)
-                print("s_List size: ")
-                print(s_List.size())
+                #print("s_List size: ")
+                #print(s_List.size())
                 probf = prob.flatten()
                 #print(probf)
                 probf = probf.tolist()
                 for i in indices:
                     probf.insert(i, 0)
                 probf = torch.tensor(probf, dtype=torch.float)
+                #print(probf)
                 a = Categorical(probf)
+                #print("categ")
+                #print(a)
                 a = a.sample()
+                #print("sampled")
+                #print(a)
                 a= a.item()
+                #print("item")
+                #(a)
+                
                 print("action: ")
                 print(a)
                 
@@ -235,11 +247,12 @@ def main():
                 s_prime = read_state(Cell)
                 #print("next state: ")
                 #print(s_prime)
-                model.put_data((s, a, r/100.0, s_prime, prob[a].item(), done))
+                model.put_data((s, a, r/100.0, s_prime, probf[a].item(), done))
                 s = s_prime
                 #done = True
                 #quit()
                 score += r
+                stepN += 1
                 if done:
                     break
 

@@ -127,7 +127,7 @@ void circuit::place_oneCell(int cell_id){
 
   cell* thecell;
   thecell = get_target_cell(cell_id);
-  cout << "Cell id is " << thecell->id << endl;
+  //cout << "Cell id is " << thecell->id << endl;
 
  	if(!thecell->isPlaced){   
     if(map_move(thecell, "init_coord") == false) {
@@ -142,7 +142,7 @@ void circuit::place_oneCell(int cell_id){
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
-  cout << thecell->id << " cell_placement done .. " << endl;
+  cout << thecell->id << "'s cell_placement done .. " << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
@@ -157,16 +157,22 @@ cell* circuit::get_target_cell(int cell_id) {
   //cell* theCell = cell_list.front(); 
 
   //cell* theCell = &(cells[action->tarID]);
-  cout << "target cell's ID is : " << cell_id << endl;
-  for(int i = 0; i < cells.size(); i++){
-    if(cells[i].id == cell_id){
-      cell* theCell = &(cells[cell_id]);
-      cout << "target cell: " << theCell->name << endl;
 
-      return theCell;
-    }
-  }
+  // cout << "target cell's ID is : " << cell_id << endl;
+  // for(int i = 0; i < cells.size(); i++){
+  //   if(cells[i].id == cell_id){
+  //     cell* theCell = &(cells[cell_id]);
+  //     cout << "target cell: " << theCell->name << endl;
+
+  //     return theCell;
+  //   }
+  // }
   //need to improve to log n 
+
+  cell* theCell = &(cells[cell_id]);
+  cout << "target cell's ID is : " << cell_id << endl;
+  cout << "target cell: " << theCell->name << endl;
+  return theCell;
 }
 
 bool circuit::isDone_calc() {

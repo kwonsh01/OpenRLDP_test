@@ -115,12 +115,16 @@ class PPO(nn.Module):
         
 def read_state(Cell):
     state = []
-        
     for j in range(Cell.size()):
-        disp_temp = Cell[j].disp
-        state.append(disp_temp)
-    
+            disp_temp = Cell[j].disp
+            height_temp = Cell[j].height
+            id_temp = Cell[j].id
+            isTried_temp = Cell[j].moveTry
+            overlap_temp = Cell[j].overlapNum
+            width_temp = Cell[j].width
+            state.append([disp_temp, height_temp, id_temp, isTried_temp, overlap_temp, width_temp])
     state = np.array(state)
+    state = np.transpose(state)
     return state
 
 def main():
@@ -164,18 +168,7 @@ def main():
         
         #load Cellist and state
         
-        state = []
-        for j in range(Cell.size()):
-            disp_temp = Cell[j].disp
-            height_temp = Cell[j].height
-            id_temp = Cell[j].id
-            isTried_temp = Cell[j].moveTry
-            overlap_temp = Cell[j].overlapNum
-            width_temp = Cell[j].width
-
-            #print(Cell[j].id)
-            state.append([disp_temp, height_temp, id_temp, isTried_temp, overlap_temp, width_temp])
-        s = np.array(state)
+        s = read_state(Cell)
         
         done = False
 

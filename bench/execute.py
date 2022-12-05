@@ -31,7 +31,7 @@ if(run == "OnePlace"):
 	ckt.pre_placement()
  
 	for i in range(Cell.size()):
-		ckt.place_oneCell(Cell[i].id)
+		ckt.place_oneCell(i)
 		if(i % 10 == 0):
 			for j in range(Cell.size()):
 				if(j > i):
