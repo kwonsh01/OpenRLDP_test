@@ -57,6 +57,9 @@ else:
 	ckt.copy_data(ckt_original)
  
 	print(ckt.isDone_calc())
+	print("=============================")
+	for i in range(Cell.size()):
+		print(Cell[i].moveTry)
 	
   
 print(" - - - - - < Program END > - - - - - ")

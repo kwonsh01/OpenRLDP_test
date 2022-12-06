@@ -220,7 +220,6 @@ def main():
                 a = Categorical(probf)
                 a = a.sample()
                 a= a.item()
-
                 
                 print("action: ")
                 print(a)
@@ -243,7 +242,7 @@ def main():
                 #cellist reload and state update
                 s_prime = read_state(Cell)
                 model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
-                print(probf)
+                #print(probf)
                 s = s_prime
                 #done = True
                 #quit()
