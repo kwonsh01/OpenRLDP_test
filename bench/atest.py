@@ -161,7 +161,7 @@ def main():
     ckt = opendp.circuit()
     ckt_original = opendp.circuit()
     ckt_original.read_files(argv)
-    Cell = ckt_original.get_Cell()
+    #Cell = ckt_original.get_Cell()
     
     ckt.copy_data(ckt_original)
 
@@ -282,8 +282,8 @@ def main():
     print("[TRAIN] End Training!")
     ckt.calc_density_factor(4)
     ckt.write_def(ckt.out_def_name)
-    ckt.evaluation
-    ckt.check_legality
+    ckt.evaluation()
+    ckt.check_legality()
     print(reward_arr)
     print("- - - - - < Program END > - - - - - ")
             
