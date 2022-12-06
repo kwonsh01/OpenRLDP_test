@@ -8,7 +8,6 @@ using opendp::row;
 using opendp::pixel;
 using opendp::rect;
 
-
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -22,14 +21,101 @@ using std::to_string;
 std::vector<cell*> circuit::get_Cell(){
   for(int i = 0; i < cells.size(); i++) {
     if(cells[i].isFixed || cells[i].inGroup || cells[i].isPlaced) continue;
-    cell_list_notFixed.push_back(&(cells[i]));
+    cell_list_isnotFixed.push_back(&(cells[i]));
   }
   //sort(cell_list.begin(), cell_list.end(), SortUpOrder);
-  return cell_list_notFixed;
+  return cell_list_isnotFixed;
 }
 
 void::circuit::copy_data(const circuit& copied){
-  *this = copied;//need to fix, except to copy cell_list_notFixed
+  // *this = copied;//need to fix, except to copy cell_list_isnotFixed
+
+  GROUP_IGNORE = copied.GROUP_IGNORE;
+
+  macro2id = copied.macro2id;
+  cell2id = copied.cell2id;
+  pin2id = copied.pin2id;
+  net2id = copied.net2id;
+  row2id = copied.row2id;
+  site2id = copied.site2id;
+  layer2id = copied.layer2id;
+
+  via2id = copied.via2id;
+  edge_spacing = copied.edge_spacing;
+
+  group2id = copied.group2id;
+
+  design_util = copied.design_util;
+  sum_displacement = copied.sum_displacement;
+
+  num_fixed_nodes = copied.num_fixed_nodes;
+  total_mArea = copied.total_mArea;
+  total_fArea = copied.total_fArea;
+  designArea = copied.designArea;
+  rowHeight = copied.rowHeight;
+  lx = copied.lx;
+  rx = copied.rx;
+  by = copied.by;
+  ty = copied.ty;
+  die = copied.die;
+  core = copied.core;
+
+  minVddCoordiY = copied.minVddCoordiY;
+  initial_power = copied.initial_power;
+
+  max_utilization = copied.max_utilization;
+  displacement = copied.displacement;
+  max_disp_const = copied.max_disp_const;
+  wsite = copied.wsite;
+  max_cell_height = copied.max_cell_height;
+  num_cpu = copied.num_cpu;
+
+  out_def_name = copied.out_def_name;
+  in_def_name = copied.in_def_name;
+
+  benchmark = copied.benchmark;
+
+  grid = copied.grid;
+  dummy_cell = copied.dummy_cell;
+  sub_regions = copied.sub_regions;
+  tracks = copied.tracks;
+
+  LEFVersion = copied.LEFVersion;
+  LEFNamesCaseSensitive = copied.LEFNamesCaseSensitive;
+  LEFDelimiter = copied.LEFDelimiter;
+  LEFBusCharacters = copied.LEFBusCharacters;
+  LEFManufacturingGrid = copied.LEFManufacturingGrid;
+
+  MAXVIASTACK = copied.MAXVIASTACK;
+  minLayer = copied.minLayer;
+  maxLayer = copied.maxLayer;
+
+  DEFVersion = copied.DEFVersion;
+  DEFDelimiter = copied.DEFDelimiter;
+  DEFBusCharacters = copied.DEFBusCharacters;
+  design_name = copied.design_name;
+  DEFdist2Microns = copied.DEFdist2Microns;
+  dieArea = copied.dieArea;
+
+  sites = copied.sites;
+  layers = copied.layers;
+  macros = copied.macros;
+  cells = copied.cells;
+  nets = copied.nets;
+  pins = copied.pins;
+
+  prevrows = copied.prevrows;
+  rows = copied.rows;
+
+  vias = copied.vias;
+  viaRules = copied.viaRules;
+  groups = copied.groups;
+
+  large_cell_stor = copied.large_cell_stor;
+
+  reward = -99999999999;
+  isDone = false;
+  //cell_list_isnotFixed;
 
   int row_num = this->ty / this->rowHeight;
   int col = this->rx / this->wsite;
@@ -167,17 +253,16 @@ cell* circuit::get_target_cell(int cell_index) {
   //   }
   // }
   //need to improve to log n 
-
-  cell* theCell = (cell_list_notFixed[cell_index]);
+  cell* theCell = (cell_list_isnotFixed[cell_index]);
   cout << "target cell's Index is : " << cell_index << endl;
   cout << "target cell's ID is : " << theCell->id << endl;
   cout << "target cell: " << theCell->name << endl;
   return theCell;
 }
 
-bool circuit::isDone_calc() {
-  for(int i = 0; i < cell_list_notFixed.size(); i++){
-    if(!(cell_list_notFixed[i]->moveTry))
+bool circuit::isDone_calc() {//need to fix
+  for(int i = 0; i < cell_list_isnotFixed.size(); i++){
+    if(!(cell_list_isnotFixed[i]->moveTry))
       return false;
   }
   return true;

@@ -20,7 +20,7 @@ class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []
-        self.fc1 = nn.Linear(6, 256)
+        self.fc1 = nn.Linear(6, 256)#feature 개수: 6
         self.fc2 = nn.Linear(256, 256)
         self.fc_pi = nn.Linear(256, 1)
         self.fc_v = nn.Linear(256**2, 1)
@@ -28,17 +28,13 @@ class PPO(nn.Module):
         
     def pi(self, x, softmax_dim=0):
         # x.shape = ( N x 9 )
-	#print("x1 is : ", x)
         x = F.normalize(x, dim=0)
-        #print("x is : ", x)
         x = F.relu(self.fc1(x))
-	#print("x is : ", x)
         x = F.relu(self.fc2(x))
         # x.shape = ( N x 256 )
         x = self.fc_pi(x)
         # x.shape = ( N x 1 )
         prob = F.softmax(x, dim=softmax_dim)
-        #prob = F.log_softmax(x, dim=softmax_dim)
         # prob.shape = ( N x 1 )
         return prob
 
@@ -78,7 +74,7 @@ class PPO(nn.Module):
             prob_a_lst.append([prob_a])
             done_mask = 0 if done else 1
             done_lst.append([done_mask])
-        #print(s_lst)
+
         s = torch.tensor(s_lst, dtype=torch.float)
         a = torch.tensor(a_lst)
         r = torch.tensor(r_lst)
@@ -107,14 +103,12 @@ class PPO(nn.Module):
 
             pi = self.pi(s, softmax_dim=1)
             
-            #test
+            #reshape action
             A = a.shape
             A = A[0]
             a = a.reshape(A,1,1)
             
-            #print("aaaaaa")
-            #print(a)
-            pi_a = pi.gather(1,a).view(A,1) #해결한듯?
+            pi_a = pi.gather(1,a).view(A,1) 
             ratio = torch.exp(torch.log(pi_a) - torch.log(prob_a))  # a/b == exp(log(a)-log(b))
 
             surr1 = ratio * advantage # r*A
@@ -179,12 +173,10 @@ def main():
         print("[TRAIN] EPISODE #",n_episode)
         stepN = 0
         #load initial circuit and state
-        #s = copy.deepcopy(state)
         ckt.copy_data(ckt_original)
         ckt.pre_placement()
         
         #load Cellist and state
-        
         state = read_state(Cell)
         s = state    
         print(s)
@@ -193,13 +185,14 @@ def main():
         while not done:
             #step 
             for t in range(T_horizon):
+                """""""""
                 triedNum = 0
                 print("move tried")
                 for i in range(Cell.size()):
-                    #print(Cell[i].isFixed)
                     if(Cell[i].moveTry == 1):
                         triedNum += 1
                 print(triedNum)
+                """
                 print("step number:")
                 print(stepN)
                 #action load
@@ -217,24 +210,17 @@ def main():
                         k += 1
                 s_List = torch.tensor(s_List, dtype=torch.float)
                 prob = model.pi(s_List)
-                #print("s_List size: ")
-                #print(s_List.size())
                 probf = prob.flatten()
-                #print(probf)
                 probf = probf.tolist()
+
                 for i in indices:
                     probf.insert(i, 0)
+
                 probf = torch.tensor(probf, dtype=torch.float)
-                #print(probf)
                 a = Categorical(probf)
-                #print("categ")
-                #print(a)
                 a = a.sample()
-                #print("sampled")
-                #print(a)
                 a= a.item()
-                #print("item")
-                #(a)
+
                 
                 print("action: ")
                 print(a)
@@ -254,17 +240,10 @@ def main():
                 print("done: ")
                 print(done)
 
-                #print("state: ")
-                #print(s)
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                #print("next state: ")
-                #print(s_prime)
-                print("sizeof probf")
-                #print(probf)
-                print("////")
-                #print(prob)
-                model.put_data((s, a, r/100.0, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
+                print(probf)
                 s = s_prime
                 #done = True
                 #quit()

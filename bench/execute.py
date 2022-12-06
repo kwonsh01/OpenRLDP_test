@@ -23,6 +23,7 @@ run = "test"
 ckt = opendp.circuit()
 ckt_original = opendp.circuit()
 ckt_original.read_files(argv)
+
 ckt.copy_data(ckt_original)
 
 Cell = ckt.get_Cell()
@@ -50,5 +51,12 @@ if(run == "OnePlace"):
 	ckt.check_legality() 
 else:
 	for i in range(Cell.size()):
-		print(i, Cell[i].id)
+		Cell[i].moveTry = True
+	
+	print(ckt.isDone_calc())
+	ckt.copy_data(ckt_original)
+ 
+	print(ckt.isDone_calc())
+	
+  
 print(" - - - - - < Program END > - - - - - ")

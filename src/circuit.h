@@ -665,7 +665,7 @@ class circuit {
 
   double reward;
   bool isDone;
-  std::vector<cell*> cell_list_notFixed;
+  std::vector<cell*> cell_list_isnotFixed;
 
   std::vector<cell*> get_Cell();
   void pre_placement();
