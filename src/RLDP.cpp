@@ -191,7 +191,7 @@ void circuit::pre_placement() {
   }
 }
 
-void circuit::place_oneCell(int cell_id){
+void circuit::place_oneCell(int cell_idx){
   //rl placement
   // vector<cell*> cell_list;
   // for(int i=0; i<cells.size(); i++) {
@@ -211,7 +211,7 @@ void circuit::place_oneCell(int cell_id){
   // cout << "isDone -->> " << isDone << endl;
 
   cell* thecell;
-  thecell = get_target_cell(cell_id);
+  thecell = get_target_cell(cell_idx);
   //cout << "Cell id is " << thecell->id << endl;
 
  	if(!thecell->isPlaced){   
@@ -227,12 +227,12 @@ void circuit::place_oneCell(int cell_id){
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
-  cout << cell_id << "'s cell_placement done .. " << endl;
+  cout << cell_idx << "'s cell_placement done .. " << endl;
   cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
 
-cell* circuit::get_target_cell(int cell_index) {
+cell* circuit::get_target_cell(int cell_idx) {
   //cell* circuit::get_target_cell(Action &action) {
   //cell* get_target_cell(vector<cell*> cell_list, Action &action) {
   // Get argmax_i (cell_list)
@@ -253,7 +253,7 @@ cell* circuit::get_target_cell(int cell_index) {
   //   }
   // }
   //need to improve to log n 
-  cell* theCell = (cell_list_isnotFixed[cell_index]);
+  cell* theCell = (cell_list_isnotFixed[cell_idx]);
   cout << "target cell's Index is : " << cell_index << endl;
   cout << "target cell's ID is : " << theCell->id << endl;
   cout << "target cell: " << theCell->name << endl;

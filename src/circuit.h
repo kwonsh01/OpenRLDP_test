@@ -669,8 +669,8 @@ class circuit {
 
   std::vector<cell*> get_Cell();
   void pre_placement();
-  void place_oneCell(int cell_id);
-  cell* get_target_cell(int cell_id);
+  void place_oneCell(int cell_idx);
+  cell* get_target_cell(int cell_idx);
   void copy_data(const circuit& copied);
   bool isDone_calc();
   double reward_calc();

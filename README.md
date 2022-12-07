@@ -15,14 +15,26 @@
     $ python3 execute.py
 
 ### NEW Function(RLDP.cpp)  
-* circuit.h
->std::vector<cell*> get_Cell();  
->void copy_data(const circuit& copied);  
->void pre_placement();  
->void place_oneCell(int cell_id);  
->cell* get_target_cell(int cell_id);  
->
->Removed CMeasure
+* Class circuit  
+>double reward  
+>bool isDone  
+>std::vector<cell*> cell_list_isnotFixed  
+>std::vector<cell*> get_Cell()  
+>void pre_placement()  
+>void place_oneCell(int cell_idx)  
+>cell* get_target_cell(int cell_idx)  
+>void copy_data(const circuit& copied)  
+>bool isDone_calc()  
+>double reward_calc()  
+>int overlap_num_calc(cell* theCell)  
+* Class cell
+>int overlapNum  
+>bool moveTry  
+>int localOverlap  
+>double localUtil  
+>double hpwl  
+>double prior    
+* Removed CMeasure
 
 ### Reference
 * OpenDP(Open Source Detailed Placement Engine) [[Link]](https://github.com/sanggido/OpenDP/tree/master)
