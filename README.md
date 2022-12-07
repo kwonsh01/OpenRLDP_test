@@ -11,8 +11,8 @@
 
 ### How To Execute
     $ cd bench
-    // needs to modifiy opendp.py
     $ python3 execute.py
+    $ python3 PPO.py
 
 ### NEW Feature(RLDP.cpp / circuit.h)  
 * Class circuit  

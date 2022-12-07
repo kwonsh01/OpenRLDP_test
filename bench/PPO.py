@@ -6,7 +6,8 @@ import numpy as np
 from torch.distributions import Categorical
 
 import opendp
-import copy
+import time
+import matplotlib.pyplot as plt
 
 #Hyperparameters
 learning_rate = 0.001
@@ -168,7 +169,9 @@ def main():
     
     reward_arr = []
     
-    for n_episode in range(10):
+    episode = int(input("episode? "))
+    start = time.time()
+    for n_episode in range(episode):
         print("[TRAIN] Start New Episode!")
         print("[TRAIN] EPISODE #",n_episode)
         stepN = 0
@@ -262,10 +265,17 @@ def main():
     ckt.write_def(ckt.out_def_name)
     ckt.evaluation()
     ckt.check_legality()
+    
+    end = time.time()
+    
+    print("Execute time: ", end-start)
+    
+    domain = np.arange(1, episode + 1, 1)
+    plt.plot(domain, reward_arr)
+    plt.show()
     print(reward_arr)
+    
     print("- - - - - < Program END > - - - - - ")
-            
-
 
 if __name__ == '__main__':
     main()

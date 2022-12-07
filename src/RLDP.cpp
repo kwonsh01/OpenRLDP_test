@@ -192,24 +192,6 @@ void circuit::pre_placement() {
 }
 
 void circuit::place_oneCell(int cell_idx){
-  //rl placement
-  // vector<cell*> cell_list;
-  // for(int i=0; i<cells.size(); i++) {
-  //     cell* theCell = &cells[i];
-  //     if(theCell->isPlaced || theCell->inGroup) continue;
-  //     cell_list.push_back(theCell);
-  // }
-  // cout << "# of non-group movable cells: " << cell_list.size() << endl;
-
-  // for(int i=0; i<cells.size(); i++) {
-  //     cell* theCell = &cells[i];
-  //     if(theCell->isPlaced || theCell->inGroup) continue;
-  //     cell_list.push_back(theCell);
-  // }
-  // cout << "# of non-group movable cells: " << cell_list.size() << endl;
-  // bool isDone = cell_list.size() > 0 ? false : true;
-  // cout << "isDone -->> " << isDone << endl;
-
   cell* thecell;
   thecell = get_target_cell(cell_idx);
   //cout << "Cell id is " << thecell->id << endl;
@@ -233,28 +215,9 @@ void circuit::place_oneCell(int cell_idx){
 }
 
 cell* circuit::get_target_cell(int cell_idx) {
-  //cell* circuit::get_target_cell(Action &action) {
-  //cell* get_target_cell(vector<cell*> cell_list, Action &action) {
-  // Get argmax_i (cell_list)
-
-  // sorted only in this function
-  //sort(cell_list.begin(), cell_list.end(), SortByPrior);
-  //cell* theCell = cell_list.front(); 
-
-  //cell* theCell = &(cells[action->tarID]);
-
-  // cout << "target cell's ID is : " << cell_id << endl;
-  // for(int i = 0; i < cells.size(); i++){
-  //   if(cells[i].id == cell_id){
-  //     cell* theCell = &(cells[cell_id]);
-  //     cout << "target cell: " << theCell->name << endl;
-
-  //     return theCell;
-  //   }
-  // }
   //need to improve to log n 
   cell* theCell = (cell_list_isnotFixed[cell_idx]);
-  cout << "target cell's Index is : " << cell_index << endl;
+  cout << "target cell's Index is : " << cell_idx << endl;
   cout << "target cell's ID is : " << theCell->id << endl;
   cout << "target cell: " << theCell->name << endl;
   return theCell;
