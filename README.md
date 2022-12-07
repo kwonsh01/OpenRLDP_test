@@ -14,7 +14,7 @@
     // needs to modifiy opendp.py
     $ python3 execute.py
 
-### NEW Function(RLDP.cpp)  
+### NEW Feature(RLDP.cpp / circuit.h)  
 * Class circuit  
 >double reward  
 >bool isDone  
