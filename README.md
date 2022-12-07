@@ -6,7 +6,8 @@
 * Tested in Ubuntu 22.04
 
 ### How To Compile
-    $ git clone --single-branch -b dev https://github.com/kwonsh01/OpenRLDP_test.git
+    $ git clone https://github.com/kwonsh01/OpenRLDP_test.git
+        $ git clone --single-branch -b dev https://github.com/kwonsh01/OpenRLDP_test.git
     $ make
 
 ### How To Execute
