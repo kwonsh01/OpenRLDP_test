@@ -44,14 +44,14 @@ if(run == "OnePlace"):
 					Cell[j].x_coord = Cell[j].init_x_coord
 					Cell[j].y_coord = Cell[j].init_y_coord
 			ckt.calc_density_factor(4)
-			ckt.write_def("def"+file+"_"+str(i)+".def")
+			ckt.write_def("output/"+file+"_"+str(i)+".def")
 			for j in range(Cell.size()):
 				if(j > i):
 					Cell[j].x_coord = 0
 					Cell[j].y_coord = 0
    
 	ckt.calc_density_factor(4)
-	ckt.write_def("def"+file+"_"+str(Cell.size())+".def")
+	ckt.write_def("output/"+file+"_"+str(Cell.size())+".def")
 	ckt.evaluation()
 	ckt.check_legality() 
 else:
@@ -62,6 +62,6 @@ else:
 	ckt.calc_density_factor(4)
 	ckt.evaluation()
 	ckt.check_legality()
-	ckt.write_def("sival.def")
+	ckt.write_def("output/sival.def")
 	
 print(" - - - - - < Program END > - - - - - ")

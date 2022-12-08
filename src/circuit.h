@@ -675,6 +675,7 @@ class circuit {
   bool isDone_calc();
   double reward_calc();
   int overlap_num_calc(cell* theCell); 
+  double reward_calc_test();
 };
 
 // parser_helper.cpp

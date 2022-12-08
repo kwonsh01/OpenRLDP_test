@@ -22,7 +22,7 @@ class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []
-        self.fc1 = nn.Linear(5, 256)#feature 개수: 6
+        self.fc1 = nn.Linear(4, 256)#feature 개수: 6
         self.fc2 = nn.Linear(256, 256)
         self.fc_pi = nn.Linear(256, 1)
         self.fc_v = nn.Linear(256**2, 1)
@@ -77,12 +77,12 @@ class PPO(nn.Module):
             done_mask = 0 if done else 1
             done_lst.append([done_mask])
 
-        s = torch.tensor(s_lst, dtype=torch.float)
-        a = torch.tensor(a_lst)
-        r = torch.tensor(r_lst)
-        s_prime = torch.tensor(s_prime_lst, dtype=torch.float)
-        done_mask = torch.tensor(done_lst, dtype=torch.float)
-        prob_a = torch.tensor(prob_a_lst)
+        s = torch.tensor(s_lst, dtype=torch.float).to(device)
+        a = torch.tensor(a_lst).to(device)
+        r = torch.tensor(r_lst).to(device)
+        s_prime = torch.tensor(s_prime_lst, dtype=torch.float).to(device)
+        done_mask = torch.tensor(done_lst, dtype=torch.float).to(device)
+        prob_a = torch.tensor(prob_a_lst).to(device)
 
         self.data = []
         return s, a, r, s_prime, done_mask, prob_a
@@ -93,6 +93,7 @@ class PPO(nn.Module):
         for i in range(K_epoch):
             td_target = r + gamma * self.v(s_prime) * done_mask
             delta = td_target - self.v(s)
+            delta = delta.cpu()
             delta = delta.detach().numpy()
 
             advantage_lst = []
@@ -101,7 +102,7 @@ class PPO(nn.Module):
                 advantage = gamma * lmbda * advantage + delta_t[0]
                 advantage_lst.append([advantage])
             advantage_lst.reverse()
-            advantage = torch.tensor(advantage_lst, dtype=torch.float)
+            advantage = torch.tensor(advantage_lst, dtype=torch.float).to(device)
 
             pi = self.pi(s, softmax_dim=1)
             
@@ -124,7 +125,7 @@ class PPO(nn.Module):
 def read_state(Cell):
     state = []
     for j in range(Cell.size()):
-        disp_temp = Cell[j].disp
+        #disp_temp = Cell[j].disp
         # height_temp = Cell[j].height
         id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
@@ -133,7 +134,7 @@ def read_state(Cell):
 
         #print(Cell[j].id)
         # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
-        state.append([isTried_temp, disp_temp, id_temp, overlap_temp, width_temp])
+        state.append([isTried_temp, id_temp, overlap_temp, width_temp])
     
     return state
 
@@ -170,7 +171,7 @@ def main():
 
     Cell = ckt.get_Cell()
     
-    model = PPO()
+    model = PPO().to(device)
     score = 0.0
     print_interval = 1
     
@@ -215,7 +216,7 @@ def main():
                         indices.append(index)
                         del s_List[index-k]
                         k += 1
-                s_List = torch.tensor(s_List, dtype=torch.float)
+                s_List = torch.tensor(s_List, dtype=torch.float).to(device)
                 prob = model.pi(s_List)
                 probf = prob.flatten()
                 probf = probf.tolist()
@@ -223,7 +224,7 @@ def main():
                 for i in indices:
                     probf.insert(i, 0)
 
-                probf = torch.tensor(probf, dtype=torch.float)
+                probf = torch.tensor(probf, dtype=torch.float).to(device)
                 a = Categorical(probf)
                 a = a.sample()
                 a = a.item()
@@ -233,7 +234,10 @@ def main():
                 #placement and reward/done loadj
                 ckt.place_oneCell(a)
 
-                r = -1.0 * ckt.reward_calc()
+                if(t == 1):
+                    r = 0
+                else:
+                    r = ckt.reward_calc_test()    
                 print("reward: ", r)
                 
                 stepN += 1
@@ -254,19 +258,21 @@ def main():
 
             model.train_net()
         #episode end
-        reward_arr.append(-1.0 * (1/r))
+        reward_arr.append((r - 98))
         if n_episode%print_interval==0 and n_episode!=0:
             print("# of episode :{}, avg score : {:.1f}".format(n_episode, score/print_interval))
             score = 0.0
 
     print("[TRAIN] End Training!")
+
+    print(probf)
+
     ckt.calc_density_factor(4)
-    ckt.write_def("def/"+str(time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time())))+".def")
     ckt.evaluation()
     ckt.check_legality()
+    ckt.write_def("output/"+str(time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time())))+".def")
     
     end = time.time()
-    
     print("Execute time: ", end-start)
     
     domain = np.arange(1, episode + 1, 1)

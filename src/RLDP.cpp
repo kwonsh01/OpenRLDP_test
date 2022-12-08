@@ -232,6 +232,59 @@ bool circuit::isDone_calc() {//need to fix
   return true;
 } 
 
+double circuit::reward_calc_test() {
+  double avg_disp = 0;
+  double max_disp = 0;
+  double hpwl = 0;
+  double displacement = 0;
+  int count_displacement = 0;
+  int tot_ov_num = 0;
+
+  //calc overlap number: can replace Rtree method
+  for(int i = 0; i < cells.size(); i++){
+    cell* theCell = &cells[i];
+    int ov_num = 0;
+    if (!theCell->isPlaced){
+        double lx = theCell->x_coord;
+        double hx = theCell->x_coord + theCell->width;
+        double ly = theCell->y_coord;
+        double hy = theCell->y_coord + theCell->height;
+
+      //ov_num += overlap_num_calc(theCell)
+      for (int j = 0; j <cells.size(); j++){
+        cell* Cell = &cells[j];
+        double lx1 = Cell->x_coord;
+        double hx1 = Cell->x_coord+Cell->width;
+        double ly1 = Cell->y_coord;
+        double hy1 = Cell->y_coord + Cell->height;
+        
+        if((lx < hx1 && hx1 < hx) || (lx < lx1 && lx1 < hx)){
+            if( (ly < hy1 && hy1 < hy) || (ly < ly1 && ly1 < hy)){
+              ov_num++;
+          tot_ov_num++;
+            }
+        }
+      }
+    }
+    theCell->overlapNum = ov_num;
+    //cout << "In reward calc : " << theCell->disp << endl;
+    if(theCell->moveTry){
+      displacement = abs(theCell->init_x_coord - theCell->x_coord) + abs(theCell->init_y_coord - theCell->y_coord);
+      avg_disp += displacement;
+      if(displacement > max_disp){
+          max_disp = displacement;
+      }
+      count_displacement++;
+    }
+    
+  }
+  avg_disp = avg_disp / count_displacement;
+
+  double shpwl = std::max((HPWL("CUR") - HPWL("INIT")) / HPWL("INIT"), 0.0); 
+
+  return (100 / (1 + avg_disp)) + (100 / (1 + max_disp)) + (100 / (1 + shpwl));
+}
+
 double circuit::reward_calc() {
   //Disp calc start
   double avg_displacement = 0;
