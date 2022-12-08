@@ -5,10 +5,10 @@
 #include "circuit.h"
 
 // lef Reader modules
-#include "lefrReader.hpp"
+#include "header/lefrReader.hpp"
 // def Reader modules
-#include "defrReader.hpp"
-#include "defiAlias.hpp"
+#include "header/defrReader.hpp"
+#include "header/defiAlias.hpp"
 
 class CircuitParser {
 protected:

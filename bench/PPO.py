@@ -16,7 +16,7 @@ gamma         = 0.98
 lmbda         = 0.95
 eps_clip      = 0.1
 K_epoch       = 3
-T_horizon     = 20
+T_horizon     = 40
 
 class PPO(nn.Module):
     def __init__(self):
