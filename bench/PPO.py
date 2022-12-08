@@ -270,4 +270,11 @@ def main():
     print("- - - - - < Program END > - - - - - ")
 
 if __name__ == '__main__':
+    is_cuda = torch.cuda.is_available()
+    if is_cuda:
+        device = torch.device("cuda")
+        print("GPU is available")
+    else:
+        device = torch.device("cpu")
+        print("GPU not available, CPU used")
     main()
