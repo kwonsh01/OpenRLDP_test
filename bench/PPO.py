@@ -144,7 +144,7 @@ def main():
     print("   RL : SH kwon, SH Kim, CH Lee                                            ")
     print("===========================================================================")
 
-    file = 'nangate45'
+    file = 'des_perf_1'
     if(file == 'nangate45'):
         argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
     elif(file == 'des_perf_a_md1'):
