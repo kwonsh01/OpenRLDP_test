@@ -144,14 +144,13 @@ def main():
     print("   RL : SH kwon, SH Kim, CH Lee                                            ")
     print("===========================================================================")
 
-    # print("1: gcd_nangate45")
-    # print("2: des_perf_a_md1")
-    # file = input()
-    file = '1'
-    if(file == '1'):
+    file = 'nangate45'
+    if(file == 'nangate45'):
         argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
-    elif(file == '2'):
+    elif(file == 'des_perf_a_md1'):
         argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
+    elif(file == 'des_perf_1'):
+        argv = "opendp -lef des_perf_1/tech.lef -lef des_perf_1/cells_modified.lef -def des_perf_1/placed.def -cpu 4 -placement_constraints des_perf_1/placement.constraints -output_def des_perf_1_output.def"
 
     #post placement
     ckt = opendp.circuit()
