@@ -7,6 +7,7 @@ from torch.distributions import Categorical
 
 import opendp
 import time
+import copy
 import matplotlib.pyplot as plt
 
 #Hyperparameters
@@ -21,14 +22,14 @@ class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []
-        self.fc1 = nn.Linear(6, 256)#feature 개수: 6
+        self.fc1 = nn.Linear(5, 256)#feature 개수: 6
         self.fc2 = nn.Linear(256, 256)
         self.fc_pi = nn.Linear(256, 1)
         self.fc_v = nn.Linear(256**2, 1)
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
         
     def pi(self, x, softmax_dim=0):
-        # x.shape = ( N x 9 )
+        # x.shape = ( N x 6 )
         x = F.normalize(x, dim=0)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
@@ -124,16 +125,16 @@ def read_state(Cell):
     state = []
     for j in range(Cell.size()):
         disp_temp = Cell[j].disp
-        height_temp = Cell[j].height
+        # height_temp = Cell[j].height
         id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
         overlap_temp = Cell[j].overlapNum
         width_temp = Cell[j].width
 
         #print(Cell[j].id)
-        state.append([disp_temp, height_temp, id_temp, isTried_temp, overlap_temp, width_temp])
+        # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
+        state.append([isTried_temp, disp_temp, id_temp, overlap_temp, width_temp])
     
-    state = np.array(state)
     return state
 
 def main():
@@ -180,9 +181,8 @@ def main():
         ckt.pre_placement()
         
         #load Cellist and state
-        state = read_state(Cell)
-        s = state    
-        print(s)
+        s = read_state(Cell) 
+        #print(s)
         done = False
 
         while not done:
@@ -196,18 +196,16 @@ def main():
                         triedNum += 1
                 print(triedNum)
                 """
-                print("step number:")
-                print(stepN)
+                print("step number:", stepN)
                 #action load
                 indices = []
-                s_List = s.tolist()
+                s_List = copy.deepcopy(s)
                 k=0
                 #print(s)
-                print("Cell size: ")
-                print(len(s))
+                print("Cell size: ", len(s))
                 for index in range(len(s)):
                     #3: moveTry index
-                    if s[index][3] == True:
+                    if s[index][0] == True:
                         indices.append(index)
                         del s_List[index-k]
                         k += 1
@@ -222,25 +220,20 @@ def main():
                 probf = torch.tensor(probf, dtype=torch.float)
                 a = Categorical(probf)
                 a = a.sample()
-                a= a.item()
+                a = a.item()
                 
-                print("action: ")
-                print(a)
+                print("action: ", a)
                 
                 #placement and reward/done loadj
-                #a = a + 114
                 ckt.place_oneCell(a)
-                #a = a - 114
+
                 r = -1.0 * ckt.reward_calc()
-                print("reward: ")
-                print(r)
-                #done = ckt.isDone_calc()
+                print("reward: ", r)
                 
                 stepN += 1
                 if (stepN == Cell.size()):
                     done = True
-                print("done: ")
-                print(done)
+                print("done: ", done)
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)

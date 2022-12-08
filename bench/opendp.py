@@ -869,11 +869,11 @@ class circuit(object):
     def pre_placement(self):
         return _opendp.circuit_pre_placement(self)
 
-    def place_oneCell(self, cell_id):
-        return _opendp.circuit_place_oneCell(self, cell_id)
+    def place_oneCell(self, cell_idx):
+        return _opendp.circuit_place_oneCell(self, cell_idx)
 
-    def get_target_cell(self, cell_id):
-        return _opendp.circuit_get_target_cell(self, cell_id)
+    def get_target_cell(self, cell_idx):
+        return _opendp.circuit_get_target_cell(self, cell_idx)
 
     def copy_data(self, copied):
         return _opendp.circuit_copy_data(self, copied)
