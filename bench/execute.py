@@ -1,5 +1,8 @@
+import logging
 import numpy as np
 import opendp
+
+logging.basicConfig(filename='dummy.log', level=logging.INFO)
 
 print("===========================================================================")     
 print("   Open Source Mixed-Height Standard Cell Detail Placer < OpenDP_v1.0 >    ")
@@ -10,21 +13,24 @@ print("=========================================================================
 # print("1: gcd_nangate45")
 # print("2: des_perf_a_md1")
 #file = input()
-file = '1'
-if(file == '1'):
+file = 'des_perf_a_md1'
+if(file == 'gcd_nangate45'):
 	argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
-elif(file == '2'):
+elif(file == 'des_perf_a_md1'):
 	argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
-
+elif(file == 'des_perf_1'):
+	argv = "opendp -lef des_perf_1/tech.lef -lef des_perf_1/cells_modified.lef -def des_perf_1/placed.def -cpu 4 -placement_constraints des_perf_1/placement.constraints -output_def des_perf_1_output.def"
+elif(file == 'pci_bridge32_b_md2'):
+    argv = "opendp -lef pci_bridge32_b_md2/tech.lef -lef pci_bridge32_b_md2/cells_modified.lef -def pci_bridge32_b_md2/placed.def -cpu 4 -placement_constraints pci_bridge32_b_md2/placement.constraints -output_def pci_bridge32_b_md2_out.def"
 
 # run = "OnePlace"
 run = "test"
 
 ckt = opendp.circuit()
 ckt_original = opendp.circuit()
-ckt_original.read_files(argv)
+ckt.read_files(argv)
 
-ckt.copy_data(ckt_original)
+ckt_original.copy_data(ckt)
 
 Cell = ckt.get_Cell()
 
@@ -50,16 +56,21 @@ if(run == "OnePlace"):
 	ckt.evaluation()
 	ckt.check_legality() 
 else:
+	ckt.pre_placement()
 	for i in range(Cell.size()):
-		Cell[i].moveTry = True
-	
-	print(ckt.isDone_calc())
-	ckt.copy_data(ckt_original)
- 
-	print(ckt.isDone_calc())
-	print("=============================")
-	for i in range(Cell.size()):
-		print(Cell[i].moveTry)
-	
+		logging.info(str(i))
+		ckt.place_oneCell(i)
+	ckt.calc_density_factor(4)
+	ckt.evaluation()
+	ckt.check_legality()
   
+	ckt.copy_data(ckt_original)
+	ckt.pre_placement()
+	for i in range(Cell.size()):
+		ckt.place_oneCell(i)
+	ckt.calc_density_factor(4)
+	ckt.evaluation()
+	ckt.check_legality()
+	ckt.write_def("sival.def")
+	
 print(" - - - - - < Program END > - - - - - ")
