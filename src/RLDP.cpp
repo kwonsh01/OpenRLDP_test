@@ -342,16 +342,16 @@ double circuit::reward_calc() {
   double shpwl = std::max((HPWL("CUR") - HPWL("INIT")) / HPWL("INIT"), 0.0) * (1.2);  
   // double shpwl = std::max((HPWL("CUR") - HPWL("INIT") / HPWL("INIT")), 0.0) * (1 + std::max(calc_density_factor(8.0), 0.2));
 
-  cout << " AVG_displacement : " << avg_displacement << endl;
-  cout << " SUM_displacement : " << sum_displacement << endl;
-  cout << " MAX_displacement : " << max_displacement << endl;
-  cout << " Smm              : " << Smm << endl;
-  cout << " Sam              : " << Sam/rowHeight << endl;
-  cout << " Shpwl            : " << shpwl << endl;
+  // cout << " AVG_displacement : " << avg_displacement << endl;
+  // cout << " SUM_displacement : " << sum_displacement << endl;
+  // cout << " MAX_displacement : " << max_displacement << endl;
+  // cout << " Smm              : " << Smm << endl;
+  // cout << " Sam              : " << Sam/rowHeight << endl;
+  // cout << " Shpwl            : " << shpwl << endl;
   // cout << " HPWL             : " << HPWL("CUR") << "    " << HPWL("INIT") << endl;
   double S_total = Sam*(1+shpwl)/rowHeight; //+ tot_ov_num;
   //cout << "total overlap is " << tot_ov_num << endl;
-  cout << "Stotal is " << S_total << endl;
+  // cout << "Stotal is " << S_total << endl;
   return S_total;
 }
 

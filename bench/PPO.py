@@ -255,7 +255,7 @@ def main():
 
     print("[TRAIN] End Training!")
     ckt.calc_density_factor(4)
-    ckt.write_def(str(time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time())))+".def")
+    ckt.write_def("def/"+str(time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time())))+".def")
     ckt.evaluation()
     ckt.check_legality()
     
