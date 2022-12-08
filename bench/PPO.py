@@ -205,13 +205,13 @@ def main():
                         triedNum += 1
                 print(triedNum)
                 """
-                print("step number:", stepN)
+                # print("step number:", stepN)
                 #action load
                 indices = []
                 s_List = copy.deepcopy(s)
                 k=0
                 #print(s)
-                print("Cell size: ", len(s))
+
                 for index in range(len(s)):
                     #3: moveTry index
                     if s[index][0] == True:
@@ -232,22 +232,21 @@ def main():
                 a = a.sample()
                 a = a.item()
                 
-                print("action: ", a)
+                # print("action: ", a)
                 
                 #placement and reward/done loadj
                 ckt.place_oneCell(a)
 
                 if(t == 0):
-                    r = 300
+                    r = 1
                 else:
-                    r = ckt.reward_calc_test()
-                r = r * r * r / 1000   
-                print("reward: ", r)
+                    r = ckt.reward_calc_test()   
+                # print("reward: ", r)
                                 
                 stepN += 1
                 if (stepN == Cell.size()):
                     done = True
-                print("done: ", done)
+                # print("done: ", done)
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
@@ -280,8 +279,8 @@ def main():
     print("Execute time: ", end-start)
     
     domain = np.arange(1, episode + 1, 1)
-    plt.plot(domain, reward_arr)
-    plt.show()
+    #plt.plot(domain, reward_arr)
+    #plt.show()
     #print(reward_arr)
     print(hpwl_arr)
     print(delta_hpwl_arr)
