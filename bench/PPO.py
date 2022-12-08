@@ -261,7 +261,7 @@ def main():
 
             model.train_net()
         #episode end
-        #reward_arr.append((r - 98))
+        reward_arr.append((r))
         hpwl_arr.append(ckt.HPWL(""))
         delta_hpwl_arr.append((ckt.HPWL("") - ckt.HPWL("INIT")) / ckt.HPWL("INIT") * 100)
         if n_episode%print_interval==0 and n_episode!=0:
@@ -279,8 +279,8 @@ def main():
     print("Execute time: ", end-start)
     
     domain = np.arange(1, episode + 1, 1)
-    #plt.plot(domain, reward_arr)
-    #plt.show()
+    plt.plot(domain, reward_arr)
+    plt.show()
     #print(reward_arr)
     print(hpwl_arr)
     print(delta_hpwl_arr)
