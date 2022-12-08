@@ -176,6 +176,8 @@ def main():
     print_interval = 1
     
     reward_arr = []
+    hpwl_arr = []
+    delta_hpwl_arr = []
     
     episode = int(input("episode? "))
     start = time.time()
@@ -241,7 +243,7 @@ def main():
                     r = ckt.reward_calc_test()
                 r = r * r * r / 1000   
                 print("reward: ", r)
-                
+                                
                 stepN += 1
                 if (stepN == Cell.size()):
                     done = True
@@ -260,7 +262,9 @@ def main():
 
             model.train_net()
         #episode end
-        reward_arr.append((r - 98))
+        #reward_arr.append((r - 98))
+        hpwl_arr.append(ckt.HPWL(""))
+        delta_hpwl_arr.append((ckt.HPWL("") - ckt.HPWL("INIT")) / ckt.HPWL("INIT") * 100)
         if n_episode%print_interval==0 and n_episode!=0:
             print("# of episode :{}, avg score : {:.1f}".format(n_episode, score/print_interval))
             score = 0.0
@@ -278,8 +282,9 @@ def main():
     domain = np.arange(1, episode + 1, 1)
     plt.plot(domain, reward_arr)
     plt.show()
-    print(reward_arr)
-    
+    #print(reward_arr)
+    print(hpwl_arr)
+    print(delta_hpwl_arr)
     print("- - - - - < Program END > - - - - - ")
 
 if __name__ == '__main__':
