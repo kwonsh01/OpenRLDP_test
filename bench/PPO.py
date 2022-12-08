@@ -220,7 +220,8 @@ def main():
                 prob = model.pi(s_List)
                 probf = prob.flatten()
                 probf = probf.tolist()
-
+                
+                #print(prob)
                 for i in indices:
                     probf.insert(i, 0)
 
@@ -234,10 +235,11 @@ def main():
                 #placement and reward/done loadj
                 ckt.place_oneCell(a)
 
-                if(t == 1):
-                    r = 0
+                if(t == 0):
+                    r = 300
                 else:
-                    r = ckt.reward_calc_test()    
+                    r = ckt.reward_calc_test()
+                r = r * r * r / 1000   
                 print("reward: ", r)
                 
                 stepN += 1
@@ -247,7 +249,7 @@ def main():
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r/100.0, s_prime, probf[a].item(), done))
                 #print(probf)
                 s = s_prime
                 #done = True
@@ -264,9 +266,7 @@ def main():
             score = 0.0
 
     print("[TRAIN] End Training!")
-
-    print(probf)
-
+    
     ckt.calc_density_factor(4)
     ckt.evaluation()
     ckt.check_legality()
