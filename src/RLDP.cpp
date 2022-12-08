@@ -193,28 +193,25 @@ void circuit::pre_placement() {
 
 void circuit::place_oneCell(int cell_idx){
   cell* thecell;
-  thecell = get_target_cell(cell_idx);
+  thecell = cell_list_isnotFixed[cell_idx];
   //cout << "Cell id is " << thecell->id << endl;
   
-  if(!thecell->isPlaced == true)
-    /* 
+  if(!thecell->isPlaced == true){
     if(map_move(thecell, "init_coord") == false) {
       if(shift_move(thecell, "init_coord") == false) {
         cout << thecell->name << " -> move failed!" << endl;
         //nomove = true;
 		    cout << thecell->isPlaced << endl;
       }
-    }*/
-    
-    
-
+    }
     thecell->moveTry = true;
-  
+  }
+    
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
   cout << cell_idx << "'s cell_placement done .. " << endl;
-  cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
+  // cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
 
@@ -359,8 +356,7 @@ double circuit::reward_calc() {
   return S_total;
 }
 
-int circuit::overlap_num_calc(cell* theCell) 
-{
+int circuit::overlap_num_calc(cell* theCell) {
     vector<cell*> ovcells = overlap_cells(theCell);
     ovcells.erase(unique(ovcells.begin(), ovcells.end()), ovcells.end());
     int num = (int)ovcells.size();

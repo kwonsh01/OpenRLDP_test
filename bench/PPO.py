@@ -144,7 +144,7 @@ def main():
     print("   RL : SH kwon, SH Kim, CH Lee                                            ")
     print("===========================================================================")
 
-    file = 'des_perf_1'
+    file = 'nangate45'
     if(file == 'nangate45'):
         argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
     elif(file == 'des_perf_a_md1'):
@@ -157,6 +157,8 @@ def main():
         argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md2/cells_modified.lef -fft_a_md2/placed.def -cpu 4 -placement_constraints fft_a_md2/placement.constraints -output_def fft_a_md2_output.def"
     elif(file == 'fft_a_md3'):
         argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md3/cells_modified.lef -fft_a_md3/placed.def -cpu 4 -placement_constraints fft_a_md3/placement.constraints -output_def fft_a_md3_output.def" 
+    elif(file == 'pci_bridge32_b_md2'):
+        argv = "opendp -lef pci_bridge32_b_md2/tech.lef -lef pci_bridge32_b_md2/cells_modified.lef -def pci_bridge32_b_md2/placed.def -cpu 4 -placement_constraints pci_bridge32_b_md2/placement.constraints -output_def pci_bridge32_b_md2_out.def"
      
     #post placement
     ckt = opendp.circuit()
