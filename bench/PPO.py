@@ -151,16 +151,21 @@ def main():
         argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
     elif(file == 'des_perf_1'):
         argv = "opendp -lef des_perf_1/tech.lef -lef des_perf_1/cells_modified.lef -def des_perf_1/placed.def -cpu 4 -placement_constraints des_perf_1/placement.constraints -output_def des_perf_1_output.def"
-
+    elif(file == 'fft_2_md2'):
+        argv = "opendp -lef fft_2_md2/tech.lef -fft_2_md2/cells_modified.lef -fft_2_md2/placed.def -cpu 4 -placement_constraints fft_2_md2/placement.constraints -output_def fft_2_md2_output.def"
+    elif(file == 'fft_a_md2'):
+        argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md2/cells_modified.lef -fft_a_md2/placed.def -cpu 4 -placement_constraints fft_a_md2/placement.constraints -output_def fft_a_md2_output.def"
+    elif(file == 'fft_a_md3'):
+        argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md3/cells_modified.lef -fft_a_md3/placed.def -cpu 4 -placement_constraints fft_a_md3/placement.constraints -output_def fft_a_md3_output.def" 
+     
     #post placement
     ckt = opendp.circuit()
     ckt_original = opendp.circuit()
-    ckt_original.read_files(argv)
-    #Cell = ckt_original.get_Cell()
     
-    ckt.copy_data(ckt_original)
+    ckt.read_files(argv)
 
-    #get cells_list
+    ckt_original.copy_data(ckt)
+
     Cell = ckt.get_Cell()
     
     model = PPO()

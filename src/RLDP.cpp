@@ -195,17 +195,21 @@ void circuit::place_oneCell(int cell_idx){
   cell* thecell;
   thecell = get_target_cell(cell_idx);
   //cout << "Cell id is " << thecell->id << endl;
-
- 	if(!thecell->isPlaced){   
+  
+  if(!thecell->isPlaced == true)
+    /* 
     if(map_move(thecell, "init_coord") == false) {
       if(shift_move(thecell, "init_coord") == false) {
         cout << thecell->name << " -> move failed!" << endl;
         //nomove = true;
 		    cout << thecell->isPlaced << endl;
       }
-    }
+    }*/
+    
+    
+
     thecell->moveTry = true;
-  }
+  
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
