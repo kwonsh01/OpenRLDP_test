@@ -1,4 +1,5 @@
 #include "circuit.h"
+#include <omp.h>
 #include <vector>
 #include <string>
 

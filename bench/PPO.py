@@ -250,7 +250,7 @@ def main():
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                model.put_data((s, a, r/100.0, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
                 #print(probf)
                 s = s_prime
                 #done = True
