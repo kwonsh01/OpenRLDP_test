@@ -674,8 +674,8 @@ class circuit {
   void copy_data(const circuit& copied);
   bool isDone_calc();
   double reward_calc();
-  int overlap_num_calc(cell* theCell); 
   double reward_calc_test();
+  int overlap_num_calc(cell* theCell); 
 };
 
 // parser_helper.cpp

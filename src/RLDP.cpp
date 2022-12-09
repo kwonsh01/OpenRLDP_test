@@ -211,7 +211,7 @@ void circuit::place_oneCell(int cell_idx){
   //feature update
   thecell->disp = abs(thecell->init_x_coord - thecell->x_coord) + abs(thecell->init_y_coord - thecell->y_coord);
   
-  // cout << cell_idx << "'s cell_placement done .. " << endl;
+  cout << cell_idx << "'s cell_placement done .. " << endl;
   // cout << " - - - - - - - - - - - - - - - - - - - - - - - - " << endl;
   return;
 }
@@ -245,13 +245,14 @@ double circuit::reward_calc_test() {
   for(int i = 0; i < cells.size(); i++){
     cell* theCell = &cells[i];
     int ov_num = 0;
+    /*
     if (!theCell->isPlaced){
         double lx = theCell->x_coord;
         double hx = theCell->x_coord + theCell->width;
         double ly = theCell->y_coord;
         double hy = theCell->y_coord + theCell->height;
 
-      //ov_num += overlap_num_calc(theCell)
+      ov_num += overlap_num_calc(theCell)
       for (int j = 0; j <cells.size(); j++){
         cell* Cell = &cells[j];
         double lx1 = Cell->x_coord;
@@ -267,6 +268,7 @@ double circuit::reward_calc_test() {
         }
       }
     }
+    */
     theCell->overlapNum = ov_num;
     //cout << "In reward calc : " << theCell->disp << endl;
     if(theCell->moveTry){
@@ -277,8 +279,8 @@ double circuit::reward_calc_test() {
       }
       count_displacement++;
     }
-    
   }
+
   avg_disp = avg_disp / count_displacement;
 
   double shpwl = std::max((HPWL("CUR") - HPWL("INIT")) / HPWL("INIT"), 0.0); 
@@ -421,5 +423,4 @@ int circuit::overlap_num_calc(cell* theCell) {
         cout << "CELL " << theCell->name << " has " << num << "overlap cells" << endl;
 
     return num;
-    
 }
