@@ -11,18 +11,18 @@ import copy
 import matplotlib.pyplot as plt
 
 #Hyperparameters
-learning_rate = 0.001
+learning_rate = 0.1
 gamma         = 0.98
 lmbda         = 0.95
-eps_clip      = 0.1
+eps_clip      = 0.5
 K_epoch       = 3
-T_horizon     = 40
+T_horizon     = 20
 
 class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []
-        self.fc1 = nn.Linear(4, 256)#feature 개수: 6
+        self.fc1 = nn.Linear(4, 256)#(state feature 개수, 256)
         self.fc2 = nn.Linear(256, 256)
         self.fc_pi = nn.Linear(256, 1)
         self.fc_v = nn.Linear(256**2, 1)
@@ -278,12 +278,18 @@ def main():
     end = time.time()
     print("Execute time: ", end-start)
     
-    domain = np.arange(1, episode + 1, 1)
-    plt.plot(domain, reward_arr)
-    plt.show()
+    # domain = np.arange(1, episode + 1, 1)
+    # plt.plot(domain, reward_arr)
+    # plt.show()
+    f0 = open("data/reward.txt", 'w')
+    f1 = open("data/hpwl.txt", 'w')
+    f2 = open("data/delta_hpwl.txt", 'w')
     #print(reward_arr)
-    print(hpwl_arr)
-    print(delta_hpwl_arr)
+    #print(hpwl_arr)
+    #print(delta_hpwl_arr)
+    f0.write(str(reward_arr))
+    f1.write(str(hpwl_arr))
+    f2.write(str(delta_hpwl_arr))
     print("- - - - - < Program END > - - - - - ")
 
 if __name__ == '__main__':
