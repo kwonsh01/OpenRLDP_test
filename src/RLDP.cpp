@@ -286,7 +286,7 @@ double circuit::reward_calc_test() {
   double shpwl = std::max((HPWL("CUR") - HPWL("INIT")) / HPWL("INIT"), 0.0); 
 
   // return (100 / (1 + avg_disp)) + (5 / (1 + max_disp)) + (100 / (1 + shpwl));
-  return (100 / (1 + avg_disp)) + (5 / (1 + max_disp));
+  return (100 / (1 + avg_disp)));
 }
 
 double circuit::reward_calc() {

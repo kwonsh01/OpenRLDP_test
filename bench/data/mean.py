@@ -1,3 +1,5 @@
+from matplotlib import pyplot as plt
+import numpy as np
 import ast
 
 f0 = open("reward.txt", 'r')
@@ -19,3 +21,10 @@ hpwl_delta_mean = sum(hpwl_delta) / len(hpwl_delta)
 print("reward_mean: ", reward_mean)
 print("hpwl_mean: ", hpwl_mean)
 print("hpwl_delta_mean: ", hpwl_delta_mean)
+
+
+plt.plot(reward)
+plt.plot(hpwl)
+plt.plot(hpwl_delta)
+
+plt.show()

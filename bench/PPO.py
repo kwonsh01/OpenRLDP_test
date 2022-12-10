@@ -129,12 +129,11 @@ def read_state(Cell):
         # height_temp = Cell[j].height
         id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
-        overlap_temp = Cell[j].overlapNum
+        # overlap_temp = Cell[j].overlapNum
+        x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
         width_temp = Cell[j].width
-
-        #print(Cell[j].id)
         # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
-        state.append([isTried_temp, id_temp, overlap_temp, width_temp])
+        state.append([isTried_temp, id_temp, x_coord, width_temp])
     
     return state
 
@@ -240,8 +239,10 @@ def main():
                 if(t == 0):
                     r = 1
                 else:
-                    r = ckt.reward_calc_test()   
-                # print("reward: ", r)
+                    r = ckt.reward_calc_test()
+                    r = r - 0.07518357
+                    r = r*500 
+                print("reward: ", r)
                                 
                 stepN += 1
                 if (stepN == Cell.size()):
@@ -250,7 +251,7 @@ def main():
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r, s_prime, probf[a].item(), done))
                 #print(probf)
                 s = s_prime
                 #done = True
