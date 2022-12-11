@@ -129,12 +129,11 @@ def read_state(Cell):
         # height_temp = Cell[j].height
         id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
-        overlap_temp = Cell[j].overlapNum
+        # overlap_temp = Cell[j].overlapNum
+        x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
         width_temp = Cell[j].width
-
-        #print(Cell[j].id)
         # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
-        state.append([isTried_temp, id_temp, overlap_temp, width_temp])
+        state.append([isTried_temp, id_temp, x_coord, width_temp])
     
     return state
 
@@ -194,74 +193,68 @@ def main():
         #print(s)
         done = False
 
-        while not done:
+        for n_episode in range(episode):
             #step 
-            for t in range(T_horizon):
-                """""""""
-                triedNum = 0
-                print("move tried")
-                for i in range(Cell.size()):
-                    if(Cell[i].moveTry == 1):
-                        triedNum += 1
-                print(triedNum)
-                """
-                # print("step number:", stepN)
-                #action load
-                indices = []
-                s_List = copy.deepcopy(s)
-                k=0
-                #print(s)
+            """""""""
+            triedNum = 0
+            print("move tried")
+            for i in range(Cell.size()):
+                if(Cell[i].moveTry == 1):
+                    triedNum += 1
+            print(triedNum)
+            """
+            # print("step number:", stepN)
+            #action load
+            indices = []
+            s_List = copy.deepcopy(s)
+            k=0
+            #print(s)
 
-                for index in range(len(s)):
-                    #3: moveTry index
-                    if s[index][0] == True:
-                        indices.append(index)
-                        del s_List[index-k]
-                        k += 1
-                s_List = torch.tensor(s_List, dtype=torch.float).to(device)
-                prob = model.pi(s_List)
-                probf = prob.flatten()
-                probf = probf.tolist()
-                
-                #print(prob)
-                for i in indices:
-                    probf.insert(i, 0)
+            for index in range(len(s)):
+                #3: moveTry index
+                if s[index][0] == True:
+                    indices.append(index)
+                    del s_List[index-k]
+                    k += 1
+            s_List = torch.tensor(s_List, dtype=torch.float).to(device)
+            prob = model.pi(s_List)
+            probf = prob.flatten()
+            probf = probf.tolist()
+            
+            #print(prob)
+            for i in indices:
+                probf.insert(i, 0)
 
-                probf = torch.tensor(probf, dtype=torch.float).to(device)
-                a = Categorical(probf)
-                a = a.sample()
-                a = a.item()
-                
-                # print("action: ", a)
-                
-                #placement and reward/done loadj
-                ckt.place_oneCell(a)
+            probf = torch.tensor(probf, dtype=torch.float).to(device)
+            a = Categorical(probf)
+            a = a.sample()
+            a = a.item()
+            
+            # print("action: ", a)
+            
+            #placement and reward/done loadj
+            ckt.place_oneCell(a)
 
-                if(t == 0):
-                    r = 1
-                else:
-                    r = ckt.reward_calc_test()   
-                    print("HPWL: ")
-                    print(ckt.HPWL("INIT"))
-                    print(ckt.HPWL(""))
-                    print()
-                # print("reward: ", r)
-                                
-                stepN += 1
-                if (stepN == Cell.size()):
-                    done = True
-                # print("done: ", done)
+            r = ckt.reward_calc_test()
+            r = r - 0.07518357
+            r = r*500 
+            print("reward: ", r)
+                            
+            stepN += 1
+            if (stepN == Cell.size()):
+                done = True
+            # print("done: ", done)
 
-                #cellist reload and state update
-                s_prime = read_state(Cell)
-                model.put_data((s, a, r/10.0, s_prime, probf[a].item(), done))
-                #print(probf)
-                s = s_prime
-                #done = True
-                #quit()
-                score += r
-                if done:
-                    break
+            #cellist reload and state update
+            s_prime = read_state(Cell)
+            model.put_data((s, a, r, s_prime, probf[a].item(), done))
+            #print(probf)
+            s = s_prime
+            #done = True
+            #quit()
+            score += r
+            if done:
+                break
 
             model.train_net()
         #episode end

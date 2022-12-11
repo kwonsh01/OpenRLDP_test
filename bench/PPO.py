@@ -12,11 +12,11 @@ import matplotlib.pyplot as plt
 
 #Hyperparameters
 learning_rate = 0.1
-gamma         = 0.98
-lmbda         = 0.95
+gamma         = 0.9
+lmbda         = 0.8
 eps_clip      = 0.5
 K_epoch       = 3
-T_horizon     = 20
+T_horizon     = 347
 
 class PPO(nn.Module):
     def __init__(self):
@@ -129,11 +129,11 @@ def read_state(Cell):
         # height_temp = Cell[j].height
         id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
-        # overlap_temp = Cell[j].overlapNum
-        x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
+        overlap_temp = Cell[j].overlapNum
+        # x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
         width_temp = Cell[j].width
         # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
-        state.append([isTried_temp, id_temp, x_coord, width_temp])
+        state.append([isTried_temp, id_temp, overlap_temp, width_temp])
     
     return state
 
@@ -236,12 +236,13 @@ def main():
                 #placement and reward/done loadj
                 ckt.place_oneCell(a)
 
-                if(t == 0):
+                if(stepN == 0):#t = 0 인거 바꿈 t=0 이면 T_horizon 마다 리워드 초기화 되더라
                     r = 1
                 else:
                     r = ckt.reward_calc_test()
                     r = r - 0.07518357
-                    r = r*500 
+                    r = r*500 + 10
+                    r = r * (1 + 5*(stepN/347))
                 print("reward: ", r)
                                 
                 stepN += 1
@@ -251,7 +252,7 @@ def main():
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                model.put_data((s, a, r, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r/10, s_prime, probf[a].item(), done))
                 #print(probf)
                 s = s_prime
                 #done = True
@@ -259,7 +260,7 @@ def main():
                 score += r
                 if done:
                     break
-
+                
             model.train_net()
         #episode end
         reward_arr.append((r))
@@ -279,15 +280,10 @@ def main():
     end = time.time()
     print("Execute time: ", end-start)
     
-    # domain = np.arange(1, episode + 1, 1)
-    # plt.plot(domain, reward_arr)
-    # plt.show()
     f0 = open("data/reward.txt", 'w')
     f1 = open("data/hpwl.txt", 'w')
     f2 = open("data/delta_hpwl.txt", 'w')
-    #print(reward_arr)
-    #print(hpwl_arr)
-    #print(delta_hpwl_arr)
+
     f0.write(str(reward_arr))
     f1.write(str(hpwl_arr))
     f2.write(str(delta_hpwl_arr))

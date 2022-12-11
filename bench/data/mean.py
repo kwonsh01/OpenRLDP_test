@@ -22,9 +22,11 @@ print("reward_mean: ", reward_mean)
 print("hpwl_mean: ", hpwl_mean)
 print("hpwl_delta_mean: ", hpwl_delta_mean)
 
-
+plt.subplot(311)
 plt.plot(reward)
+plt.subplot(312)
 plt.plot(hpwl)
+plt.subplot(313)
 plt.plot(hpwl_delta)
 
 plt.show()
