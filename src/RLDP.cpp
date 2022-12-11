@@ -284,9 +284,10 @@ double circuit::reward_calc() {
   double disp_H3 = 0;
   double disp_H4 = 0;    
 
-  overlap_num_calc()
+  overlap_num_calc();
 
   for(int i = 0; i < cells.size(); i++){
+    cell* theCell = &cells[i];
     // cout << "In reward calc : " << theCell->disp << endl;
     // double displacement = abs(theCell->init_x_coord - theCell->x_coord) + abs(theCell->init_y_coord - theCell->y_coord);
     double displacement = theCell->disp;

@@ -22,6 +22,5 @@ clean :
 	rm -rf bench/__pycache__
 	rm -rf bench/output
 	mkdir bench/output
-	rm bench/data/delta_hpwl.txt
-	rm bench/data/hpwl.txt
-	rm bench/data/reward.txt
+	rm -rf bench/data
+	mkdir bench/data
