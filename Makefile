@@ -18,9 +18,11 @@ opendp_wrap.o :
 	mv circuit.h $(SOURCE)/
 
 clean :
-	rm -rf bench/$(TARGET) bench/opendp.py opendp_wrap.o *.o opendp_wrap.cxx
+	rm -rf bench/$(TARGET) bench/opendp.py opendp_wrap.o *.o opendp_wrap.cxx bench/dummy.log
 	rm -rf bench/__pycache__
 	rm -rf bench/output
 	mkdir bench/output
-	rm -rf bench/data
-	mkdir bench/data
+	rm -f bench/logdir/check_legality.log
+	rm -f bench/data/reward.txt
+	rm -f bench/data/hpwl.txt
+	rm -f bench/data/delta_hpwl.txt
