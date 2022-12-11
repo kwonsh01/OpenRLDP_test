@@ -1,11 +1,11 @@
 #include "circuit.h"
 #include "circuitParser.h"
 
-#include "lefrReader.hpp"
-#include "lefwWriter.hpp"
-#include "lefiDebug.hpp"
-#include "lefiEncryptInt.hpp"
-#include "lefiUtil.hpp"
+#include "header/lefrReader.hpp"
+#include "header/lefwWriter.hpp"
+#include "header/lefiDebug.hpp"
+#include "header/lefiEncryptInt.hpp"
+#include "header/lefiUtil.hpp"
 
 using opendp::circuit;
 

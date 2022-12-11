@@ -1,9 +1,12 @@
 # OpenRLDP
 *OpenDP with PPO*
 
+![Random DP](https://user-images.githubusercontent.com/88278994/206904712-639e90f2-1295-47e4-bac4-a54263cdac63.gif)
+
+
 ### Required
 * GCC compiler and SWIG
-* Tested in Ubuntu 22.04
+* Tested in Ubuntu 20.04
 
 ### How To Compile
     $ git clone https://github.com/kwonsh01/OpenRLDP_test.git
@@ -12,8 +15,7 @@
 
 ### How To Execute
     $ cd bench
-    // needs to modifiy opendp.py
-    $ python3 execute.py
+    $ python3 PPO.py
 
 ### NEW Feature(RLDP.cpp / circuit.h)  
 * Class circuit  
@@ -28,6 +30,7 @@
 >bool isDone_calc()  
 >double reward_calc()  
 >int overlap_num_calc(cell* theCell)  
+>void overlap_num_calc()  
 * Class cell
 >int overlapNum  
 >bool moveTry  

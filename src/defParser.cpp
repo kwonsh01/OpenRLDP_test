@@ -34,8 +34,8 @@
 #ifndef WIN32
 #include <unistd.h>
 #endif /* not WIN32 */
-#include "defrReader.hpp"
-#include "defiAlias.hpp"
+#include "header/defrReader.hpp"
+#include "header/defiAlias.hpp"
 #include "circuit.h"
 #include "circuitParser.h"
 
