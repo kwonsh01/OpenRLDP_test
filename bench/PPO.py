@@ -237,7 +237,7 @@ def main():
                 ckt.place_oneCell(a)
 
                 r = ckt.reward_calc_test()
-                r = (r - 0.07518357) * 100
+                r = (r - 0.07518357) * 300
                 print("reward: ", r)
                                 
                 stepN += 1
@@ -247,7 +247,7 @@ def main():
 
                 #cellist reload and state update
                 s_prime = read_state(Cell)
-                model.put_data((s, a, r/10, s_prime, probf[a].item(), done))
+                model.put_data((s, a, r, s_prime, probf[a].item(), done))
                 
                 
                 s = s_prime
