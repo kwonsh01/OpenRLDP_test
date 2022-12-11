@@ -23,8 +23,4 @@ clean :
 	rm -rf bench/__pycache__
 	rm -rf bench/output
 	rm -f bench/data/*.txt
-<<<<<<< HEAD
 	rm -f logdir/check_legality.log
-=======
-	rm -f logdir/check_legality.log
->>>>>>> 058b86764eb80e3f813a4c7b724538f068e168a1
