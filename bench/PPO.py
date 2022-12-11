@@ -11,18 +11,18 @@ import copy
 import matplotlib.pyplot as plt
 
 #Hyperparameters
-learning_rate = 0.1
-gamma         = 0.9
-lmbda         = 0.8
-eps_clip      = 0.5
-K_epoch       = 3
-T_horizon     = 347
+learning_rate = 0.0001 # 0.003 ~ 0.000005
+gamma         = 0.98 # 0.8 ~ 0.9997 in general: 0.99
+lmbda         = 0.95 # 0.9 ~ 1.0
+eps_clip      = 0.5 # 0.1 ~ 0.3
+K_epoch       = 3 # 3 ~ 30
+T_horizon     = 20 # 32 ~ 5000
 
 class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []
-        self.fc1 = nn.Linear(4, 256)#(state feature 개수, 256)
+        self.fc1 = nn.Linear(5, 256)#(state feature 개수, 256)
         self.fc2 = nn.Linear(256, 256)
         self.fc_pi = nn.Linear(256, 1)
         self.fc_v = nn.Linear(256**2, 1)
@@ -41,24 +41,24 @@ class PPO(nn.Module):
         return prob
 
     def v(self, x):
-        # x.shape = ( N x 9)    B X (N x 5)
+        #x.shape = ( N x 9)    B X (N x 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        # x.shape = ( N x 256 )
+        #x.shape = ( N x 256 )
         if len(x.shape) > 2:
             x1 = torch.transpose(x, 1, 2)
         else:
             x1 = torch.transpose(x, 0, 1)
         x = torch.matmul(x1, x)
         A = x.shape
-        # x.shape = ( 256 x 256 )
+        #x.shape = ( 256 x 256 )
         if len(x.shape) > 2:
             x = torch.reshape(x, (A[0], -1))
         else:
             x = x.flatten()
-        # x.shape = ( 256**2 x 1)
+        #x.shape = ( 256**2 x 1)
         v = self.fc_v(x)
-        # v.shape = (1, )
+        #v.shape = (1, )
         return v
 
     def put_data(self, transition):
@@ -66,9 +66,9 @@ class PPO(nn.Module):
         
     def make_batch(self):
         s_lst, a_lst, r_lst, s_prime_lst, prob_a_lst, done_lst = [], [], [], [], [], []
+        
         for transition in self.data:
             s, a, r, s_prime, prob_a, done = transition
-            
             s_lst.append(s)
             a_lst.append([a])
             r_lst.append([r])
@@ -83,7 +83,7 @@ class PPO(nn.Module):
         s_prime = torch.tensor(s_prime_lst, dtype=torch.float).to(device)
         done_mask = torch.tensor(done_lst, dtype=torch.float).to(device)
         prob_a = torch.tensor(prob_a_lst).to(device)
-
+        
         self.data = []
         return s, a, r, s_prime, done_mask, prob_a
         
@@ -124,16 +124,14 @@ class PPO(nn.Module):
         
 def read_state(Cell):
     state = []
+    
     for j in range(Cell.size()):
-        #disp_temp = Cell[j].disp
-        # height_temp = Cell[j].height
-        id_temp = Cell[j].id
         isTried_temp = Cell[j].moveTry
-        overlap_temp = Cell[j].overlapNum
-        # x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
+        id_temp = Cell[j].id
+        x_coord = Cell[j].x_coord if Cell[j].x_coord != 0 else Cell[j].init_x_coord
+        y_coord = Cell[j].y_coord if Cell[j].y_coord != 0 else Cell[j].init_y_coord
         width_temp = Cell[j].width
-        # state.append([isTried_temp, disp_temp, height_temp, id_temp, overlap_temp, width_temp])
-        state.append([isTried_temp, id_temp, overlap_temp, width_temp])
+        state.append([isTried_temp, id_temp, x_coord, y_coord, width_temp])
     
     return state
 
@@ -146,26 +144,26 @@ def main():
 
     file = 'nangate45'
     if(file == 'nangate45'):
-        argv = "opendp -lef gcd_nangate45/Nangate45_tech.lef -lef gcd_nangate45/Nangate45.lef -def gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
+        argv = "opendp -lef benchmarks/gcd_nangate45/Nangate45_tech.lef -lef benchmarks/gcd_nangate45/Nangate45.lef -def benchmarks/gcd_nangate45/gcd_nangate45_global_place.def -cpu 4 -output_def gcd_nangate45_output.def"
     elif(file == 'des_perf_a_md1'):
-        argv = "opendp -lef des_perf_a_md1/tech.lef -lef des_perf_a_md1/cells_modified.lef -def des_perf_a_md1/placed.def -cpu 4 -placement_constraints des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
+        argv = "opendp -lef benchmarks/des_perf_a_md1/tech.lef -lef benchmarks/des_perf_a_md1/cells_modified.lef -def benchmarks/des_perf_a_md1/placed.def -cpu 4 -placement_constraints benchmarks/des_perf_a_md1/placement.constraints -output_def des_perf_a_md1_output.def"
     elif(file == 'des_perf_1'):
-        argv = "opendp -lef des_perf_1/tech.lef -lef des_perf_1/cells_modified.lef -def des_perf_1/placed.def -cpu 4 -placement_constraints des_perf_1/placement.constraints -output_def des_perf_1_output.def"
+        argv = "opendp -lef benchmarks/des_perf_1/tech.lef -lef benchmarks/des_perf_1/cells_modified.lef -def benchmarks/des_perf_1/placed.def -cpu 4 -placement_constraints benchmarks/des_perf_1/placement.constraints -output_def des_perf_1_output.def"
     elif(file == 'fft_2_md2'):
-        argv = "opendp -lef fft_2_md2/tech.lef -fft_2_md2/cells_modified.lef -fft_2_md2/placed.def -cpu 4 -placement_constraints fft_2_md2/placement.constraints -output_def fft_2_md2_output.def"
+        argv = "opendp -lef benchmarks/fft_2_md2/tech.lef -lef benchmarks/fft_2_md2/cells_modified.lef -def benchmarks/fft_2_md2/placed.def -cpu 4 -placement_constraints benchmarks/fft_2_md2/placement.constraints -output_def fft_2_md2_output.def"
     elif(file == 'fft_a_md2'):
-        argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md2/cells_modified.lef -fft_a_md2/placed.def -cpu 4 -placement_constraints fft_a_md2/placement.constraints -output_def fft_a_md2_output.def"
+        argv = "opendp -lef benchmarks/fft_a_md2/tech.lef -lef benchmarks/fft_a_md2/cells_modified.lef -def benchmarks/fft_a_md2/placed.def -cpu 4 -placement_constraints benchmarks/fft_a_md2/placement.constraints -output_def fft_a_md2_output.def"
     elif(file == 'fft_a_md3'):
-        argv = "opendp -lef fft_a_md2/tech.lef -fft_a_md3/cells_modified.lef -fft_a_md3/placed.def -cpu 4 -placement_constraints fft_a_md3/placement.constraints -output_def fft_a_md3_output.def" 
+        argv = "opendp -lef fft_a_md2/tech.lef -lef benchmarks/fft_a_md3/cells_modified.lef -def benchmarks/fft_a_md3/placed.def -cpu 4 -placement_constraints benchmarks/fft_a_md3/placement.constraints -output_def fft_a_md3_output.def" 
     elif(file == 'pci_bridge32_b_md2'):
-        argv = "opendp -lef pci_bridge32_b_md2/tech.lef -lef pci_bridge32_b_md2/cells_modified.lef -def pci_bridge32_b_md2/placed.def -cpu 4 -placement_constraints pci_bridge32_b_md2/placement.constraints -output_def pci_bridge32_b_md2_out.def"
+        argv = "opendp -lef benchmarks/pci_bridge32_b_md2/tech.lef -lef benchmarks/pci_bridge32_b_md2/cells_modified.lef -def pci_bridge32_b_md2/placed.def -cpu 4 -placement_constraints pci_bridge32_b_md2/placement.constraints -output_def pci_bridge32_b_md2_out.def"
      
     #post placement
     ckt = opendp.circuit()
     ckt_original = opendp.circuit()
     
     ckt.read_files(argv)
-
+    
     ckt_original.copy_data(ckt)
 
     Cell = ckt.get_Cell()
@@ -180,23 +178,25 @@ def main():
     
     episode = int(input("episode? "))
     start = time.time()
+    
     for n_episode in range(episode):
         print("[TRAIN] Start New Episode!")
         print("[TRAIN] EPISODE #",n_episode)
-        stepN = 0
+        
         #load initial circuit and state
         ckt.copy_data(ckt_original)
         ckt.pre_placement()
         
         #load Cellist and state
-        s = read_state(Cell) 
-        #print(s)
+        s = read_state(Cell)
+        
+        stepN = 0
         done = False
 
         while not done:
             #step 
             for t in range(T_horizon):
-                """""""""
+                """"
                 triedNum = 0
                 print("move tried")
                 for i in range(Cell.size()):
@@ -209,7 +209,6 @@ def main():
                 indices = []
                 s_List = copy.deepcopy(s)
                 k=0
-                #print(s)
 
                 for index in range(len(s)):
                     #3: moveTry index
@@ -221,28 +220,24 @@ def main():
                 prob = model.pi(s_List)
                 probf = prob.flatten()
                 probf = probf.tolist()
+                # print(prob)
                 
-                #print(prob)
                 for i in indices:
                     probf.insert(i, 0)
 
                 probf = torch.tensor(probf, dtype=torch.float).to(device)
+                # print(probf)
+                
                 a = Categorical(probf)
                 a = a.sample()
                 a = a.item()
-                
                 # print("action: ", a)
                 
                 #placement and reward/done loadj
                 ckt.place_oneCell(a)
 
-                if(stepN == 0):#t = 0 인거 바꿈 t=0 이면 T_horizon 마다 리워드 초기화 되더라
-                    r = 1
-                else:
-                    r = ckt.reward_calc_test()
-                    r = r - 0.07518357
-                    r = r*500 + 10
-                    r = r * (1 + 5*(stepN/347))
+                r = ckt.reward_calc_test()
+                r = (r - 0.07518357) * 100
                 print("reward: ", r)
                                 
                 stepN += 1
@@ -253,32 +248,35 @@ def main():
                 #cellist reload and state update
                 s_prime = read_state(Cell)
                 model.put_data((s, a, r/10, s_prime, probf[a].item(), done))
-                #print(probf)
+                
+                
                 s = s_prime
-                #done = True
-                #quit()
+                
                 score += r
+                
                 if done:
                     break
                 
             model.train_net()
+        
         #episode end
         reward_arr.append((r))
         hpwl_arr.append(ckt.HPWL(""))
         delta_hpwl_arr.append((ckt.HPWL("") - ckt.HPWL("INIT")) / ckt.HPWL("INIT") * 100)
+        
         if n_episode%print_interval==0 and n_episode!=0:
             print("# of episode :{}, avg score : {:.1f}".format(n_episode, score/print_interval))
             score = 0.0
 
     print("[TRAIN] End Training!")
     
+    end = time.time()
+    print("Execute time: ", end-start)
+    
     ckt.calc_density_factor(4)
     ckt.evaluation()
     ckt.check_legality()
     ckt.write_def("output/"+str(time.strftime('%Y-%m-%d %I:%M:%S %p', time.localtime(time.time())))+".def")
-    
-    end = time.time()
-    print("Execute time: ", end-start)
     
     f0 = open("data/reward.txt", 'w')
     f1 = open("data/hpwl.txt", 'w')
@@ -287,6 +285,7 @@ def main():
     f0.write(str(reward_arr))
     f1.write(str(hpwl_arr))
     f2.write(str(delta_hpwl_arr))
+    
     print("- - - - - < Program END > - - - - - ")
 
 if __name__ == '__main__':
