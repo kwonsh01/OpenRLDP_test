@@ -10,7 +10,6 @@
 
 ### How To Compile
     $ git clone https://github.com/kwonsh01/OpenRLDP_test.git
-        $ git clone --single-branch -b dev https://github.com/kwonsh01/OpenRLDP_test.git
     $ make
 
 ### How To Execute
