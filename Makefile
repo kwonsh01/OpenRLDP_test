@@ -5,6 +5,7 @@ SOURCE = src
 $(TARGET) : $(OBJECTS)
 	g++ -shared -o $(TARGET) *.o -L$(CURDIR)/$(SOURCE)/lib -lcdef -lcdefzlib -ldef -ldefzlib -llef -llefzlib -lclef -lclefzlib
 	mv $(TARGET) bench/
+	mkdir bench/output
 	rm *.o
 	rm opendp_wrap.cxx
 
@@ -21,8 +22,5 @@ clean :
 	rm -rf bench/$(TARGET) bench/opendp.py opendp_wrap.o *.o opendp_wrap.cxx bench/dummy.log
 	rm -rf bench/__pycache__
 	rm -rf bench/output
-	mkdir bench/output
 	rm -f bench/logdir/check_legality.log
-	rm -f bench/data/reward.txt
-	rm -f bench/data/hpwl.txt
-	rm -f bench/data/delta_hpwl.txt
+	rm -f bench/data/*.txt
