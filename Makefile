@@ -22,5 +22,5 @@ clean :
 	rm -rf bench/$(TARGET) bench/opendp.py opendp_wrap.o *.o opendp_wrap.cxx bench/dummy.log
 	rm -rf bench/__pycache__
 	rm -rf bench/output
-	rm -f bench/logdir/check_legality.log
 	rm -f bench/data/*.txt
+	rm -f logdir/check_legality.log

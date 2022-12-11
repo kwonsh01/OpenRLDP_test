@@ -15,6 +15,8 @@
 ### How To Execute
     $ cd bench
     $ python3 PPO.py
+    $ cd data
+    $ python3 mean.py
 
 ### NEW Feature(RLDP.cpp / circuit.h)  
 * Class circuit  
